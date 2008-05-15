@@ -20,4 +20,4 @@ requires:
   Moose: 0.39
   XML::Simple: 0
   perl: 5.8.3
-version: undef
+version: 0.01
