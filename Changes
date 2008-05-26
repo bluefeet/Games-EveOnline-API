@@ -1,9 +1,14 @@
-0.02
+0.03
+ - Broke parse_xml() out of load_xml(), just for the sake of separation.
+ - Added Devel::Coverage metrics to the POD.
+ - Commented on WebServer::EveOnline.
+
+0.02 : 2008-05-25
  - Fix the various feeds - they were totally broke.
  - Add tests for Perl::Critic and Pod::Coverage.
  - Add a test that forces the API to use pre-generated XML and compare results.
  - Upgrade to Module::Install 0.73 for no particular reason.
 
-0.01
+0.01 : 2008-05-14
  - First release.
 

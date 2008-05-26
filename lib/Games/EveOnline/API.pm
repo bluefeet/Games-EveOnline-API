@@ -47,43 +47,60 @@ L<http://myeve.eve-online.com/api/doc/>
 
 use Moose;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use URI;
 use LWP::Simple qw();
 use XML::Simple qw();
+use Carp qw( croak );
 
 #use Data::Dumper qw( Dumper );
 #use File::Slurp qw(write_file);
 
 =head1 ATTRIBUTES
 
+These attributes may be passed as part of object construction (as arguments
+to the new() method) or they can be later set as method calls themselves.
+
 =head2 user_id
+
+  my $user_id = $eapi->user_id();
+  $eapi->user_id( $user_id );
+
+An Eve Online API user ID.
 
 =head2 api_key
 
-=head2 api_url
+  my $api_key = $eapi->api_key();
+  $eapi->api_key( $api_key );
+
+The key, as provided Eve Online, to access the API.
 
 =head2 character_id
 
-=head2 test_mode
+  my $character_id = $eapi->character_id();
+  $eapi->character_id( $character_id );
+
+The ID of an Eve character.  This will be set automatically
+by any methods (such as skill_in_training()) when you pass
+them a character_id.  If so, any methods that require a
+character ID, will default to using the character ID provided
+here.
+
+=head2 api_url
+
+The URL that will be used to access the Eve Online API.
+Default to L<http://api.eve-online.com>.  Normally you
+won't want to change this.
 
 =cut
 
-has 'user_id'      => (is=>'rw', isa=>'Int',  default=>0 );
-has 'api_key'      => (is=>'rw', isa=>'Str',  default=>'' );
-has 'api_url'      => (is=>'rw', isa=>'Str',  default=>'http://api.eve-online.com');
-has 'character_id' => (is=>'rw', isa=>'Int',  default=>0 );
-has 'test_mode'    => (is=>'rw', usa=>'Bool', default=>0 );
+has 'user_id'      => (is=>'rw', isa=>'Int', default=>0 );
+has 'api_key'      => (is=>'rw', isa=>'Str', default=>'' );
+has 'character_id' => (is=>'rw', isa=>'Int', default=>0 );
+has 'api_url'      => (is=>'rw', isa=>'Str', default=>'http://api.eve-online.com');
 
-my $xml_paths = {
-    skill_tree        => 'eve/SkillTree.xml.aspx',
-    ref_types         => 'eve/RefTypes.xml.aspx',
-    sovereignty       => 'map/Sovereignty.xml.aspx',
-    characters        => 'account/Characters.xml.aspx',
-    character_sheet   => 'char/CharacterSheet.xml.aspx',
-    skill_in_training => 'char/SkillInTraining.xml.aspx',
-};
+has 'test_xml'     => (is=>'rw', isa=>'Str', default=>'' );
 
 =head1 METHODS
 
@@ -122,6 +139,35 @@ The data structure is:
         }
       }
     }
+provider.  If you over-use the API I'm sure you'll eventually get blocked.
+
+=head2 skill_tree
+
+  my $skill_groups = $eapi->skill_tree();
+
+Returns a complex data structure containing the entire skill tree.
+The data structure is:
+
+  {
+    cached_until => $date_time,
+    $group_id => {
+      name => $group_name,
+      skills => {
+        $skill_id => {
+          name => $skill_name,
+          description => $skill_description,
+          rank => $skill_rank,
+          primary_attribute => $skill_primary_attribute,
+          secondary_attribute => $skill_secondary_attribute,
+          bonuses => {
+            $bonus_name => $bonus_value,
+          },
+          required_skills => {
+            $skill_id => $skill_level,
+          },
+        }
+      }
+    }
   }
 
 =cut
@@ -130,8 +176,7 @@ sub skill_tree {
     my ($self) = @_;
 
     my $data = $self->load_xml(
-        'skill_tree',
-        no_auth => 1,
+        path => 'eve/SkillTree.xml.aspx',
     );
 
     my $result = {};
@@ -174,10 +219,10 @@ sub skill_tree {
 
   my $ref_types = $eapi->ref_types();
 
-Returns all a simple hash structure of types of financial
-activity.  This is useful when pulling wallet information.
-The key of the has is the ref type's ID, and the value of
-the title of the ref type.
+Returns a simple hash structure containing definitions of the
+various financial transaction types.  This is useful when pulling
+wallet information. The key of the hash is the ref type's ID, and
+the value of the title of the ref type.
 
 =cut
 
@@ -185,8 +230,7 @@ sub ref_types {
     my ($self) = @_;
 
     my $data = $self->load_xml(
-        'ref_types',
-        no_auth => 1,
+        path => 'eve/RefTypes.xml.aspx',
     );
 
     my $ref_types = {};
@@ -220,8 +264,7 @@ sub sovereignty {
     my ($self) = @_;
 
     my $data = $self->load_xml(
-        'sovereignty',
-        no_auth => 1,
+        path => 'map/Sovereignty.xml.aspx',
     );
 
     my $systems = {};
@@ -264,7 +307,8 @@ sub characters {
     my ($self) = @_;
 
     my $data = $self->load_xml(
-        'characters',
+        path          => 'account/Characters.xml.aspx',
+        requires_auth => 1,
     );
 
     my $characters = {};
@@ -285,7 +329,7 @@ sub characters {
 
 =head2 character_sheet
 
-  my $sheet = $eapi->character_sheet( $character_id );
+  my $sheet = $eapi->character_sheet( character_id => $character_id );
 
 For the given character ID a hashref is returned with
 the all the information about the character.  Here's
@@ -327,13 +371,15 @@ a sample:
 =cut
 
 sub character_sheet {
-    my ($self, $character_id) = @_;
+    my ($self, %args) = @_;
 
-    $character_id ||= $self->character_id();
+    $self->character_id( $args{character_id} ) if ($args{character_id});
+    croak('No character_id specified') if (!$self->character_id());
 
     my $data = $self->load_xml(
-        'character_sheet',
-        params => { characterID => $character_id },
+        path                  => 'char/CharacterSheet.xml.aspx',
+        requires_auth         => 1,
+        requires_character_id => 1,
     );
     my $result = $data->{result};
 
@@ -372,7 +418,7 @@ sub character_sheet {
 
 =head2 skill_in_training
 
-  my $in_training = $eapi->skill_in_training( $character_id );
+  my $in_training = $eapi->skill_in_training( character_id => $character_id );
 
 Returns a hashref with the following structure:
 
@@ -392,13 +438,15 @@ Returns a hashref with the following structure:
 =cut
 
 sub skill_in_training {
-    my ($self, $character_id) = @_;
+    my ($self, %args) = @_;
 
-    $character_id ||= $self->character_id();
+    $self->character_id( $args{character_id} ) if ($args{character_id});
+    croak('No character_id specified') if (!$self->character_id());
 
     my $data = $self->load_xml(
-        'skill_in_training',
-        params => { characterID => $character_id },
+        path                  => 'char/SkillInTraining.xml.aspx',
+        requires_auth         => 1,
+        requires_character_id => 1,
     );
     my $result = $data->{result};
 
@@ -422,12 +470,12 @@ sub skill_in_training {
 =head2 load_xml
 
   my $data = $eapi->load_xml(
-    'some/FeedSource.xml.aspx',
-    no_auth => 1,       # Whether to pass the user_id and api_key.
-    params  => { ... }, # Any extra params.
+    path  => 'some/FeedThing.xml.aspx',
+    requires_auth         => 1,  # Optional.  Default is 0 (false).
+    requires_character_id => 1,  # Optional.  Default is 0 (false).
   );
 
-Calls the specified URL (prepended with the api_url), passes any
+Calls the specified path (prepended with the api_url), passes any
 parameters, and parses the resulting XML in to a perl complex
 data structure.
 
@@ -437,40 +485,81 @@ available Eve APIs are implemented in this module.
 =cut
 
 sub load_xml {
-    my ($self, $xml_key, %args) = @_;
+    my ($self, %args) = @_;
 
     my $xml_source;
 
-    if ($self->test_mode()) {
-        $xml_source = "t/${xml_key}.xml";
+    if ($self->test_xml()) {
+        $xml_source = $self->test_xml();
     }
     else {
-        my $xml_path = $xml_paths->{$xml_key};
+        croak('No feed path provided') if (!$args{path});
 
-        my $params = $args{params} || {};
-        if (!$args{no_auth}) {
-            $params->{userID} ||= $self->user_id();
-            $params->{apiKey} ||= $self->api_key();
+        my $params = {};
+
+        if ($args{requires_auth}) {
+            $params->{userID} = $self->user_id();
+            $params->{apiKey} = $self->api_key();
         }
 
-        my $uri = URI->new( $self->api_url() . '/' . $xml_path );
-        $uri->query_form( %$params );
+        if ($args{requires_character_id}) {
+            $params->{characterID} = $self->character_id();
+        }
+
+        my $uri = URI->new( $self->api_url() . '/' . $args{path} );
+        $uri->query_form( $params );
 
         $xml_source = LWP::Simple::get( $uri->as_string() );
     }
 
+    my $data = $self->parse_xml( $xml_source );
+    die('Unsupported EveOnline API XML version (requires version 2)') if ($data->{version} != 2);
+
+    return $data;
+}
+
+=head2 parse_xml
+
+  my $data = $eapi->parse_xml( $some_xml );
+
+A very lightweight wrapper around L<XML::Simple>.
+
+=cut
+
+sub parse_xml {
+    my ($self, $xml) = @_;
+
     my $data = XML::Simple::XMLin(
-        $xml_source,
+        $xml,
         ForceArray => ['row'],
         KeyAttr    => ['characterID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name'],
     );
-    die('Unsupported EveOnline API XML version (requires version 2)') if ($data->{version} != 2);
 
     return $data;
 }
 
 1;
 __END__
+
+=head1 TEST COVERAGE
+
+  ---------------------------- ------ ------ ------ ------ ------ ------ ------
+  File                           stmt   bran   cond    sub    pod   time  total
+  ---------------------------- ------ ------ ------ ------ ------ ------ ------
+  ...ib/Games/EveOnline/API.pm   93.2   37.5   22.2  100.0  100.0  100.0   83.3
+  Total                          93.2   37.5   22.2  100.0  100.0  100.0   83.3
+  ---------------------------- ------ ------ ------ ------ ------ ------ ------
+
+Generated using L<Devel::Cover>.
+
+=head1 ALTERNATIVES
+
+The module L<WebService::EveOnline> is also available.  It provides an
+OO and database-backed, but incomplete, interface to the Eve API.  Given
+some time L<Games::EveOnline::API> will have a sister distribution that
+will provide an OO-database (ORM) interface using L<DBIx::Class>.  If
+you can't wait until that time then L<WebService::EveOnline> is likely
+your best answer.
 
 =head1 AUTHOR
 
