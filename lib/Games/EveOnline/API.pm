@@ -47,7 +47,7 @@ L<http://myeve.eve-online.com/api/doc/>
 
 use Moose;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use URI;
 use LWP::Simple qw();
@@ -63,6 +63,10 @@ use XML::Simple qw();
 =head2 api_key
 
 =head2 api_url
+
+=head2 character_id
+
+=head2 test_mode
 
 =cut
 

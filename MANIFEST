@@ -10,7 +10,7 @@ inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Games/EveOnline/API.pm
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
 META.yml
 README
 t/00_use.t
@@ -18,10 +18,15 @@ t/01_pod.t
 t/02_pod_coverage.t
 t/03_critic.t
 t/10_local.t
+t/character_sheet.dump
+t/character_sheet.xml
+t/characters.dump
+t/characters.xml
 t/ref_types.dump
 t/ref_types.xml
+t/skill_in_training.dump
+t/skill_in_training.xml
 t/skill_tree.dump
 t/skill_tree.xml
 t/sovereignty.dump
 t/sovereignty.xml
-vi
