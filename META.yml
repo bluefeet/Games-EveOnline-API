@@ -1,11 +1,11 @@
 ---
-abstract: A simple Perl wrapper around the EveOnline XML API.
+abstract: 'A simple Perl wrapper around the EveOnline XML API.'
 author:
   - 'Aran Clary Deltac <bluefeet@cpan.org>'
 build_requires:
   Test::More: 0.62
 distribution_type: module
-generated_by: Module::Install version 0.69
+generated_by: 'Module::Install version 0.73'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.3.html
