@@ -52,7 +52,9 @@ our $VERSION = '0.01';
 use URI;
 use LWP::Simple qw();
 use XML::Simple qw();
-use Data::Dumper qw( Dumper );
+
+#use Data::Dumper qw( Dumper );
+#use File::Slurp qw(write_file);
 
 =head1 ATTRIBUTES
 
@@ -64,15 +66,19 @@ use Data::Dumper qw( Dumper );
 
 =cut
 
-has 'user_id'   => (is=>'rw', isa=>'Int',  default=>0 );
-has 'api_key'   => (is=>'rw', isa=>'Str',  default=>'' );
-has 'api_url'   => (is=>'rw', isa=>'Str',  default=>'http://api.eve-online.com');
-has 'test_mode' => (is=>'rw', usa=>'Bool', default=>0 );
+has 'user_id'      => (is=>'rw', isa=>'Int',  default=>0 );
+has 'api_key'      => (is=>'rw', isa=>'Str',  default=>'' );
+has 'api_url'      => (is=>'rw', isa=>'Str',  default=>'http://api.eve-online.com');
+has 'character_id' => (is=>'rw', isa=>'Int',  default=>0 );
+has 'test_mode'    => (is=>'rw', usa=>'Bool', default=>0 );
 
 my $xml_paths = {
-    skill_tree  => 'eve/SkillTree.xml.aspx',
-    ref_types   => 'eve/RefTypes.xml.aspx',
-    sovereignty => 'map/Sovereignty.xml.aspx',
+    skill_tree        => 'eve/SkillTree.xml.aspx',
+    ref_types         => 'eve/RefTypes.xml.aspx',
+    sovereignty       => 'map/Sovereignty.xml.aspx',
+    characters        => 'account/Characters.xml.aspx',
+    character_sheet   => 'char/CharacterSheet.xml.aspx',
+    skill_in_training => 'char/SkillInTraining.xml.aspx',
 };
 
 =head1 METHODS
@@ -254,12 +260,11 @@ sub characters {
     my ($self) = @_;
 
     my $data = $self->load_xml(
-        'account/Characters.xml.aspx',
+        'characters',
     );
-    my $result = $data->{result};
 
     my $characters = {};
-    my $rows = $result->{rowset}->{row};
+    my $rows = $data->{result}->{rowset}->{row};
 
     foreach my $character_id (keys %$rows) {
         $characters->{$character_id} = {
@@ -269,7 +274,7 @@ sub characters {
         };
     }
 
-    $characters->{cache_until} = $data->{cacheUntil};
+    $characters->{cached_until} = $data->{cachedUntil};
 
     return $characters;
 }
@@ -320,8 +325,10 @@ a sample:
 sub character_sheet {
     my ($self, $character_id) = @_;
 
+    $character_id ||= $self->character_id();
+
     my $data = $self->load_xml(
-        'char/CharacterSheet.xml.aspx',
+        'character_sheet',
         params => { characterID => $character_id },
     );
     my $result = $data->{result};
@@ -354,7 +361,7 @@ sub character_sheet {
         $skill->{skill_points} = $skill_rows->{$skill_id}->{skillpoints};
     }
 
-    $sheet->{cache_until} = $data->{cacheUntil};
+    $sheet->{cached_until} = $data->{cachedUntil};
 
     return $sheet;
 }
@@ -383,8 +390,10 @@ Returns a hashref with the following structure:
 sub skill_in_training {
     my ($self, $character_id) = @_;
 
+    $character_id ||= $self->character_id();
+
     my $data = $self->load_xml(
-        'char/SkillInTraining.xml.aspx',
+        'skill_in_training',
         params => { characterID => $character_id },
     );
     my $result = $data->{result};
@@ -401,7 +410,7 @@ sub skill_in_training {
         end_sp => $result->{trainingDestinationSP},
     };
 
-    $training->{cache_until} = $data->{cacheUntil};
+    $training->{cached_until} = $data->{cachedUntil};
 
     return $training;
 }
@@ -425,10 +434,6 @@ available Eve APIs are implemented in this module.
 
 sub load_xml {
     my ($self, $xml_key, %args) = @_;
-
-    if ($xml_key eq 'sovereignty') {
-#        $self->test_mode(0);
-    }
 
     my $xml_source;
 
@@ -456,10 +461,6 @@ sub load_xml {
         KeyAttr    => ['characterID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name'],
     );
     die('Unsupported EveOnline API XML version (requires version 2)') if ($data->{version} != 2);
-
-    if ($xml_key eq 'sovereignty') {
-#        print $xml_source;
-    }
 
     return $data;
 }
