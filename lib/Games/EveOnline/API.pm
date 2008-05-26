@@ -52,6 +52,7 @@ our $VERSION = '0.01';
 use URI;
 use LWP::Simple qw();
 use XML::Simple qw();
+use Data::Dumper qw( Dumper );
 
 =head1 ATTRIBUTES
 
@@ -63,9 +64,16 @@ use XML::Simple qw();
 
 =cut
 
-has 'user_id'   => (is=>'rw', isa=>'Int',     default=>0 );
-has 'api_key'   => (is=>'rw', isa=>'Str',     default=>'' );
-has 'api_url'   => (is=>'rw', isa=>'Str',     default=>'http://api.eve-online.com');
+has 'user_id'   => (is=>'rw', isa=>'Int',  default=>0 );
+has 'api_key'   => (is=>'rw', isa=>'Str',  default=>'' );
+has 'api_url'   => (is=>'rw', isa=>'Str',  default=>'http://api.eve-online.com');
+has 'test_mode' => (is=>'rw', usa=>'Bool', default=>0 );
+
+my $xml_paths = {
+    skill_tree  => 'eve/SkillTree.xml.aspx',
+    ref_types   => 'eve/RefTypes.xml.aspx',
+    sovereignty => 'map/Sovereignty.xml.aspx',
+};
 
 =head1 METHODS
 
@@ -112,13 +120,13 @@ sub skill_tree {
     my ($self) = @_;
 
     my $data = $self->load_xml(
-        'eve/SkillTree.xml.aspx',
+        'skill_tree',
         no_auth => 1,
     );
 
-    my $result;
+    my $result = {};
 
-    my $group_rows = $data->{rowset}->{row};
+    my $group_rows = $data->{result}->{rowset}->{row};
     foreach my $group_id (keys %$group_rows) {
         my $group_result = $result->{$group_id} ||= {};
         $group_result->{name} = $group_rows->{$group_id}->{groupName};
@@ -147,7 +155,7 @@ sub skill_tree {
         }
     }
 
-    $result->{cached_until} = $data->{cached_until};
+    $result->{cached_until} = $data->{cachedUntil};
 
     return $result;
 }
@@ -167,18 +175,18 @@ sub ref_types {
     my ($self) = @_;
 
     my $data = $self->load_xml(
-        'eve/RefTypes.xml.aspx',
+        'ref_types',
         no_auth => 1,
     );
 
     my $ref_types = {};
 
-    my $rows = $data->{rowset}->{row};
+    my $rows = $data->{result}->{rowset}->{row};
     foreach my $ref_type_id (keys %$rows) {
         $ref_types->{$ref_type_id} = $rows->{$ref_type_id}->{refTypeName};
     }
 
-    $ref_types->{cached_until} = $data->{cached_until};
+    $ref_types->{cached_until} = $data->{cachedUntil};
 
     return $ref_types;
 }
@@ -202,14 +210,13 @@ sub sovereignty {
     my ($self) = @_;
 
     my $data = $self->load_xml(
-        'map/Sovereignty.xml.aspx',
+        'sovereignty',
         no_auth => 1,
     );
-    my $result = $data->{result};
 
     my $systems = {};
 
-    my $rows = $result->{rowset}->{row};
+    my $rows = $data->{result}->{rowset}->{row};
     foreach my $system_id (keys %$rows) {
         my $system = $systems->{$system_id} = {};
         $system->{name} = $rows->{$system_id}->{solarSystemName};
@@ -219,8 +226,8 @@ sub sovereignty {
         $system->{alliance_id} = $rows->{$system_id}->{allianceID};
     }
 
-    $systems->{cached_until} = $data->{cached_until};
-    $systems->{data_time}    = $data->{data_time};
+    $systems->{cached_until} = $data->{cachedUntil};
+    $systems->{data_time}    = $data->{result}->{dataTime};
 
     return $systems;
 }
@@ -323,7 +330,7 @@ sub character_sheet {
     my $enhancers     = $sheet->{attribute_enhancers} = {};
     my $enhancer_rows = $result->{attributeEnhancers};
     foreach my $attribute (keys %$enhancer_rows) {
-        my ($real_attribute) = ($attribute =~ /^([a-z]+)/);
+        my ($real_attribute) = ($attribute =~ /^([a-z]+)/xm);
         my $enhancer         = $enhancers->{$real_attribute} = {};
 
         $enhancer->{name}  = $enhancer_rows->{$attribute}->{augmentatorName};
@@ -417,24 +424,42 @@ available Eve APIs are implemented in this module.
 =cut
 
 sub load_xml {
-    my ($self, $path, %args) = @_;
+    my ($self, $xml_key, %args) = @_;
 
-    my $params = $args{params} || {};
-    if (!$args{no_auth}) {
-        $params->{userID} ||= $self->user_id();
-        $params->{apiKey} ||= $self->api_key();
+    if ($xml_key eq 'sovereignty') {
+#        $self->test_mode(0);
     }
 
-    my $uri = URI->new( $self->api_url() . '/' . $path );
-    $uri->query_form( %$params );
+    my $xml_source;
 
-    my $xml = LWP::Simple::get( $uri->as_string() );
+    if ($self->test_mode()) {
+        $xml_source = "t/${xml_key}.xml";
+    }
+    else {
+        my $xml_path = $xml_paths->{$xml_key};
+
+        my $params = $args{params} || {};
+        if (!$args{no_auth}) {
+            $params->{userID} ||= $self->user_id();
+            $params->{apiKey} ||= $self->api_key();
+        }
+
+        my $uri = URI->new( $self->api_url() . '/' . $xml_path );
+        $uri->query_form( %$params );
+
+        $xml_source = LWP::Simple::get( $uri->as_string() );
+    }
+
     my $data = XML::Simple::XMLin(
-        $xml,
+        $xml_source,
         ForceArray => ['row'],
         KeyAttr    => ['characterID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name'],
     );
     die('Unsupported EveOnline API XML version (requires version 2)') if ($data->{version} != 2);
+
+    if ($xml_key eq 'sovereignty') {
+#        print $xml_source;
+    }
 
     return $data;
 }

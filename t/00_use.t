@@ -1,8 +1,10 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 use strict;
 use warnings;
 
 use Test::More tests => 1;
 
-use_ok( 'Games::EveOnline::API' );
+BEGIN {
+    use_ok( 'Games::EveOnline::API' );
+}
 

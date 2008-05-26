@@ -1,3 +1,7 @@
+0.02
+ - 
+ - Upgrade to Module::Install 0.73 for no particular reason.
+
 0.01
  - First release.
 

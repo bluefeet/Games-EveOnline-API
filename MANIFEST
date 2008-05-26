@@ -1,3 +1,4 @@
+.perlcriticrc
 Changes
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
@@ -13,3 +14,14 @@ MANIFEST
 META.yml
 README
 t/00_use.t
+t/01_pod.t
+t/02_pod_coverage.t
+t/03_critic.t
+t/10_local.t
+t/ref_types.dump
+t/ref_types.xml
+t/skill_tree.dump
+t/skill_tree.xml
+t/sovereignty.dump
+t/sovereignty.xml
+vi
