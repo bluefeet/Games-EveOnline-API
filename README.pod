@@ -1,0 +1,283 @@
+=head1 NAME
+
+Games::EveOnline::API - A simple Perl wrapper around the EveOnline XML API.
+
+=head1 SYNOPSIS
+
+  use Games::EveOnline::API;
+  my $eapi = Games::EveOnline::API->new();
+  
+  my $skill_groups = $eapi->skill_tree();
+  my $ref_types = $eapi->ref_types();
+  my $systems = $eapi->sovereignty();
+  
+  # The rest of the methods require authentication.
+  my $eapi = Games::EveOnline::API->new( user_id=>'..', api_key=>'..' );
+  
+  my $characters = $eapi->characters();
+  my $sheet = $eapi->character_sheet( $character_id );
+  my $in_training = $eapi->skill_in_training( $character_id );
+
+=head1 DESCRIPTION
+
+This module provides a Perl wrapper around the Eve-Online API, version 2.
+The need for the wrapper arrises for two reasons.  First, the XML that
+is provided by the API is overly complex, at least for my taste.  So, other
+than just returning you a perl data representation of the XML, it also
+simplifies the results.
+
+Second, I want to write a L<DBIx::Class> wrapper around the API, and it
+made more sense to first create a low-level perl interface to the API,
+and then use it to power the higher level DBIC API.
+
+Only a couple of the methods provided by this module can be used straight
+away.  The rest require that you get a user_id and api_key.  You can get
+these at:
+
+L<http://myeve.eve-online.com/api/default.asp>
+
+Also, this modules does not attempt to duplicate the documentation already
+provided by CCP.  Read their API docs too:
+
+L<http://myeve.eve-online.com/api/doc/>
+
+=head1 ATTRIBUTES
+
+These attributes may be passed as part of object construction (as arguments
+to the new() method) or they can be later set as method calls themselves.
+
+=head2 user_id
+
+  my $user_id = $eapi->user_id();
+  $eapi->user_id( $user_id );
+
+An Eve Online API user ID.
+
+=head2 api_key
+
+  my $api_key = $eapi->api_key();
+  $eapi->api_key( $api_key );
+
+The key, as provided Eve Online, to access the API.
+
+=head2 character_id
+
+  my $character_id = $eapi->character_id();
+  $eapi->character_id( $character_id );
+
+The ID of an Eve character.  This will be set automatically
+by any methods (such as skill_in_training()) when you pass
+them a character_id.  If so, any methods that require a
+character ID, will default to using the character ID provided
+here.
+
+=head2 api_url
+
+The URL that will be used to access the Eve Online API.
+Default to L<http://api.eve-online.com>.  Normally you
+won't want to change this.
+
+=head1 METHODS
+
+Most of these methods return a 'cached_until' value.  I've no clue if this
+is CCP telling you how long you should cache the information before you
+should request it again, or if this is the point at which CCP will refresh
+their cache of this information.
+
+Either way, it is good etiquet to follow the cacheing guidelines of a
+provider.  If you over-use the API I'm sure you'll eventually get blocked.
+
+=head2 skill_tree
+
+  my $skill_groups = $eapi->skill_tree();
+
+Returns a complex data structure containing the entire skill tree.
+The data structure is:
+
+  {
+    cached_until => $date_time,
+    $group_id => {
+      name => $group_name,
+      skills => {
+        $skill_id => {
+          name => $skill_name,
+          description => $skill_description,
+          rank => $skill_rank,
+          primary_attribute => $skill_primary_attribute,
+          secondary_attribute => $skill_secondary_attribute,
+          bonuses => {
+            $bonus_name => $bonus_value,
+          },
+          required_skills => {
+            $skill_id => $skill_level,
+          },
+        }
+      }
+    }
+provider.  If you over-use the API I'm sure you'll eventually get blocked.
+
+=head2 skill_tree
+
+  my $skill_groups = $eapi->skill_tree();
+
+Returns a complex data structure containing the entire skill tree.
+The data structure is:
+
+  {
+    cached_until => $date_time,
+    $group_id => {
+      name => $group_name,
+      skills => {
+        $skill_id => {
+          name => $skill_name,
+          description => $skill_description,
+          rank => $skill_rank,
+          primary_attribute => $skill_primary_attribute,
+          secondary_attribute => $skill_secondary_attribute,
+          bonuses => {
+            $bonus_name => $bonus_value,
+          },
+          required_skills => {
+            $skill_id => $skill_level,
+          },
+        }
+      }
+    }
+  }
+
+=head2 ref_types
+
+  my $ref_types = $eapi->ref_types();
+
+Returns a simple hash structure containing definitions of the
+various financial transaction types.  This is useful when pulling
+wallet information. The key of the hash is the ref type's ID, and
+the value of the title of the ref type.
+
+=head2 sovereignty
+
+  my $systems = $eapi->sovereignty();
+
+Returns a hashref where each key is the system ID, and the
+value is a hashref with the keys:
+
+  name
+  faction_id
+  sovereignty_level
+  constellation_sovereignty
+  alliance_id
+
+=head2 characters
+
+  my $characters = $eapi->characters();
+
+Returns a hashref where key is the character ID and the
+value is a hashref with a couple bits about the character.
+Here's a sample:
+
+  {
+    '1972081734' => {
+      'corporation_name' => 'Bellator Apparatus',
+      'corporation_id'   => '1044143901',
+      'name'             => 'Ardent Dawn'
+    }
+  }
+
+=head2 character_sheet
+
+  my $sheet = $eapi->character_sheet( character_id => $character_id );
+
+For the given character ID a hashref is returned with
+the all the information about the character.  Here's
+a sample:
+
+  {
+    'name'             => 'Ardent Dawn',
+    'balance'          => '99010910.10',
+    'race'             => 'Amarr',
+    'blood_line'       => 'Amarr',
+    'corporation_name' => 'Bellator Apparatus',
+    'corporation_id'   => '1044143901',
+  
+    'skills' => {
+      '3455' => {
+        'level'        => '2',
+        'skill_points' => '1415'
+      },
+      # Removed the rest of the skills for readability.
+    },
+  
+    'attribute_enhancers' => {
+      'memory' => {
+        'value' => '3',
+        'name'  => 'Memory Augmentation - Basic'
+      },
+      # Removed the rest of the enhancers for readability.
+    },
+  
+    'attributes' => {
+      'memory'       => '7',
+      'intelligence' => '7',
+      'perception'   => '4',
+      'charisma'     => '4',
+      'willpower'    => '17'
+    }
+  }
+
+=head2 skill_in_training
+
+  my $in_training = $eapi->skill_in_training( character_id => $character_id );
+
+Returns a hashref with the following structure:
+
+  {
+    'current_tq_time' => {
+      'content' => '2008-05-10 04:06:35',
+      'offset'  => '0'
+    },
+    'end_time'   => '2008-05-10 19:23:18',
+    'start_sp'   => '139147',
+    'to_level'   => '5',
+    'start_time' => '2008-05-07 16:15:05',
+    'skill_id'   => '3436',
+    'end_sp'     => '256000'
+  }
+
+=head2 load_xml
+
+  my $data = $eapi->load_xml(
+    path  => 'some/FeedThing.xml.aspx',
+    requires_auth         => 1,  # Optional.  Default is 0 (false).
+    requires_character_id => 1,  # Optional.  Default is 0 (false).
+  );
+
+Calls the specified path (prepended with the api_url), passes any
+parameters, and parses the resulting XML in to a perl complex
+data structure.
+
+Normally you will not want to use this directly, as all of the
+available Eve APIs are implemented in this module.
+
+=head2 parse_xml
+
+  my $data = $eapi->parse_xml( $some_xml );
+
+A very lightweight wrapper around L<XML::Simple>.
+
+=head1 SEE ALSO
+
+=over
+
+=item L<WebService::EveOnline>
+
+=back
+
+=head1 AUTHOR
+
+Aran Clary Deltac <bluefeet@cpan.org>
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+

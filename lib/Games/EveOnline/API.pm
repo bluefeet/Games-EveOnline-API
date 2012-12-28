@@ -541,25 +541,13 @@ sub parse_xml {
 1;
 __END__
 
-=head1 TEST COVERAGE
+=head1 SEE ALSO
 
-  ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  File                           stmt   bran   cond    sub    pod   time  total
-  ---------------------------- ------ ------ ------ ------ ------ ------ ------
-  ...ib/Games/EveOnline/API.pm   93.2   37.5   22.2  100.0  100.0  100.0   83.3
-  Total                          93.2   37.5   22.2  100.0  100.0  100.0   83.3
-  ---------------------------- ------ ------ ------ ------ ------ ------ ------
+=over
 
-Generated using L<Devel::Cover>.
+=item L<WebService::EveOnline>
 
-=head1 ALTERNATIVES
-
-The module L<WebService::EveOnline> is also available.  It provides an
-OO and database-backed, but incomplete, interface to the Eve API.  Given
-some time L<Games::EveOnline::API> will have a sister distribution that
-will provide an OO-database (ORM) interface using L<DBIx::Class>.  If
-you can't wait until that time then L<WebService::EveOnline> is likely
-your best answer.
+=back
 
 =head1 AUTHOR
 
