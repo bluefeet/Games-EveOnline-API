@@ -10,9 +10,7 @@
                                            'name' => 'Corporation Management',
                                            'required_skills' => {},
                                            'rank' => '1',
-                                           'description' => 'Basic corporation operation. +10 corporation members allowed per level.
-
-Notice:  the CEO must update his corporation through the corporation user interface before the skill takes effect',
+                                           'description' => 'Basic corporation operation. +10 corporation members allowed per level.',
                                            'secondary_attribute' => 'charisma'
                                          },
                                  '12241' => {
@@ -25,9 +23,7 @@ Notice:  the CEO must update his corporation through the corporation user interf
                                                                    '3732' => '5'
                                                                  },
                                             'rank' => '8',
-                                            'description' => 'Advanced corporation operation. +1000 corporation members allowed per level. 
-
-Notice:  the CEO must update his corporation through the corporation user interface before the skill takes effect',
+                                            'description' => 'Advanced corporation operation. +1000 corporation members allowed per level.',
                                             'secondary_attribute' => 'charisma'
                                           },
                                  '3732' => {
@@ -40,9 +36,7 @@ Notice:  the CEO must update his corporation through the corporation user interf
                                                                   '3731' => '5'
                                                                 },
                                            'rank' => '5',
-                                           'description' => 'Advanced corporation operation. +200 corporation members allowed per level. 
-
-Notice:  the CEO must update his corporation through the corporation user interface before the skill takes effect',
+                                           'description' => 'Advanced corporation operation. +200 corporation members allowed per level.',
                                            'secondary_attribute' => 'charisma'
                                          },
                                  '3369' => {
@@ -68,9 +62,7 @@ Notice:  the CEO must update his corporation through the corporation user interf
                                                                   '3355' => '3'
                                                                 },
                                            'rank' => '2',
-                                           'description' => 'Skill at operating multiracial corporations. Extra 20% corporation members of other race than CEO allowed per skill level.  Percentage is based on CEO\'s corporation management skills, not the number of people in the corporation.
-
-Note:  the CEO must update his corporation through the corporation user interface before the skill takes effect.',
+                                           'description' => 'Skill at operating multiracial corporations. Extra 20% corporation members of other race than CEO allowed per skill level.  Percentage is based on CEO\'s corporation management skills, not the number of people in the corporation.',
                                            'secondary_attribute' => 'charisma'
                                          },
                                  '3731' => {
@@ -83,9 +75,7 @@ Note:  the CEO must update his corporation through the corporation user interfac
                                                                   '3363' => '5'
                                                                 },
                                            'rank' => '3',
-                                           'description' => 'Advanced corporation operation. +50 members per level.
-
-Notice:  the CEO must update his corporation through the corporation user interface before the skill takes effect',
+                                           'description' => 'Advanced corporation operation. +50 members per level.',
                                            'secondary_attribute' => 'charisma'
                                          },
                                  '3373' => {
@@ -99,11 +89,7 @@ Notice:  the CEO must update his corporation through the corporation user interf
                                                                   '11584' => '5'
                                                                 },
                                            'rank' => '7',
-                                           'description' => 'Skill at using starbase weapon systems. Allows control of one array per level. Arrays must be placed outside of the forcefield to be controlled. 
-
-Can not be trained on Trial Accounts.
-
-',
+                                           'description' => 'Skill at using starbase weapon systems. Allows control of one array per level. Arrays must be placed outside of the forcefield to be controlled.',
                                            'secondary_attribute' => 'charisma'
                                          },
                                  '11584' => {
