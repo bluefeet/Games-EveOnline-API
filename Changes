@@ -1,6 +1,8 @@
 Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
+
+0.04      2014-06-22
  - Fix params for API EveOnline (chipsoid)
  - Fix tests skill_tree (chipsoid)
 
