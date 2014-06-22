@@ -17,8 +17,8 @@ Games::EveOnline::API - A simple Perl wrapper around the EveOnline XML API.
   my $eapi = Games::EveOnline::API->new( user_id=>'..', api_key=>'..' );
   
   my $characters = $eapi->characters();
-  my $sheet = $eapi->character_sheet( $character_id );
-  my $in_training = $eapi->skill_in_training( $character_id );
+  my $sheet = $eapi->character_sheet( character_id => $character_id );
+  my $in_training = $eapi->skill_in_training( character_id => $character_id );
 
 =head1 DESCRIPTION
 
@@ -28,58 +28,10 @@ is provided by the API is overly complex, at least for my taste.  So, other
 than just returning you a perl data representation of the XML, it also
 simplifies the results.
 
-Second, I want to write a L<DBIx::Class> wrapper around the API, and it
-made more sense to first create a low-level perl interface to the API,
-and then use it to power the higher level DBIC API.
-
 Only a couple of the methods provided by this module can be used straight
-away.  The rest require that you get a user_id and api_key.  You can get
-these at:
+away.  The rest require that you get a user_id (keyID) and api_key (vCode).
 
-L<http://myeve.eve-online.com/api/default.asp>
-
-Also, this modules does not attempt to duplicate the documentation already
-provided by CCP.  Read their API docs too:
-
-L<http://myeve.eve-online.com/api/doc/>
-
-=head1 ATTRIBUTES
-
-These attributes may be passed as part of object construction (as arguments
-to the new() method) or they can be later set as method calls themselves.
-
-=head2 user_id
-
-  my $user_id = $eapi->user_id();
-  $eapi->user_id( $user_id );
-
-An Eve Online API user ID.
-
-=head2 api_key
-
-  my $api_key = $eapi->api_key();
-  $eapi->api_key( $api_key );
-
-The key, as provided Eve Online, to access the API.
-
-=head2 character_id
-
-  my $character_id = $eapi->character_id();
-  $eapi->character_id( $character_id );
-
-The ID of an Eve character.  This will be set automatically
-by any methods (such as skill_in_training()) when you pass
-them a character_id.  If so, any methods that require a
-character ID, will default to using the character ID provided
-here.
-
-=head2 api_url
-
-The URL that will be used to access the Eve Online API.
-Default to L<http://api.eve-online.com>.  Normally you
-won't want to change this.
-
-=head1 METHODS
+=head1 A NOTE ON CACHING
 
 Most of these methods return a 'cached_until' value.  I've no clue if this
 is CCP telling you how long you should cache the information before you
@@ -89,34 +41,31 @@ their cache of this information.
 Either way, it is good etiquet to follow the cacheing guidelines of a
 provider.  If you over-use the API I'm sure you'll eventually get blocked.
 
-=head2 skill_tree
+=head1 ARGUMENTS
 
-  my $skill_groups = $eapi->skill_tree();
+=head2 user_id
 
-Returns a complex data structure containing the entire skill tree.
-The data structure is:
+An Eve Online API user ID (also known as a keyID).
 
-  {
-    cached_until => $date_time,
-    $group_id => {
-      name => $group_name,
-      skills => {
-        $skill_id => {
-          name => $skill_name,
-          description => $skill_description,
-          rank => $skill_rank,
-          primary_attribute => $skill_primary_attribute,
-          secondary_attribute => $skill_secondary_attribute,
-          bonuses => {
-            $bonus_name => $bonus_value,
-          },
-          required_skills => {
-            $skill_id => $skill_level,
-          },
-        }
-      }
-    }
-provider.  If you over-use the API I'm sure you'll eventually get blocked.
+=head2 api_key
+
+The key, as provided Eve Online, to access the API (also known
+as a vCode).
+
+=head2 character_id
+
+Set the default C<character_id>.  Any methods that require
+a characte ID, and are not given one, will use this one.
+
+=head2 api_url
+
+The URL that will be used to access the Eve Online API.
+Defaults to L<https://api.eveonline.com>.  Normally you
+won't want to change this.
+
+=head1 ANONYMOUS METHODS
+
+These methods may be called anonymously, without authentication.
 
 =head2 skill_tree
 
@@ -168,6 +117,11 @@ value is a hashref with the keys:
   sovereignty_level
   constellation_sovereignty
   alliance_id
+
+=head1 RESTRICTED METHODS
+
+These methods require authentication to use, so you must have set
+the L</user_id> and L</api_key> arguments to use them.
 
 =head2 characters
 
@@ -245,32 +199,13 @@ Returns a hashref with the following structure:
     'end_sp'     => '256000'
   }
 
-=head2 load_xml
-
-  my $data = $eapi->load_xml(
-    path  => 'some/FeedThing.xml.aspx',
-    requires_auth         => 1,  # Optional.  Default is 0 (false).
-    requires_character_id => 1,  # Optional.  Default is 0 (false).
-  );
-
-Calls the specified path (prepended with the api_url), passes any
-parameters, and parses the resulting XML in to a perl complex
-data structure.
-
-Normally you will not want to use this directly, as all of the
-available Eve APIs are implemented in this module.
-
-=head2 parse_xml
-
-  my $data = $eapi->parse_xml( $some_xml );
-
-A very lightweight wrapper around L<XML::Simple>.
-
 =head1 SEE ALSO
 
 =over
 
-=item L<WebService::EveOnline>
+=item *
+
+L<WebService::EveOnline>
 
 =back
 
@@ -282,7 +217,9 @@ Aran Clary Deltac <bluefeet@gmail.com>
 
 =over
 
-=item Andrey Chips Kuzmin <chipsoid@cpan.org>
+=item *
+
+Andrey Chips Kuzmin <chipsoid@cpan.org>
 
 =back
 

@@ -1,6 +1,9 @@
 Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
+ - Use Moo and Type::Tiny instead of Moose.
+ - Make this class have immutable attributes.
+ - Remove test code from the core module.
 
 0.04      2014-06-22
  - Fix params for API EveOnline (chipsoid)

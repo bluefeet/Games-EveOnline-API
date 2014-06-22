@@ -1,4 +1,5 @@
 package Games::EveOnline::API;
+use Moo;
 
 =head1 NAME
 
@@ -17,8 +18,8 @@ Games::EveOnline::API - A simple Perl wrapper around the EveOnline XML API.
   my $eapi = Games::EveOnline::API->new( user_id=>'..', api_key=>'..' );
   
   my $characters = $eapi->characters();
-  my $sheet = $eapi->character_sheet( $character_id );
-  my $in_training = $eapi->skill_in_training( $character_id );
+  my $sheet = $eapi->character_sheet( character_id => $character_id );
+  my $in_training = $eapi->skill_in_training( character_id => $character_id );
 
 =head1 DESCRIPTION
 
@@ -28,78 +29,10 @@ is provided by the API is overly complex, at least for my taste.  So, other
 than just returning you a perl data representation of the XML, it also
 simplifies the results.
 
-Second, I want to write a L<DBIx::Class> wrapper around the API, and it
-made more sense to first create a low-level perl interface to the API,
-and then use it to power the higher level DBIC API.
-
 Only a couple of the methods provided by this module can be used straight
-away.  The rest require that you get a user_id and api_key.  You can get
-these at:
+away.  The rest require that you get a user_id (keyID) and api_key (vCode).
 
-L<http://myeve.eve-online.com/api/default.asp>
-
-Also, this modules does not attempt to duplicate the documentation already
-provided by CCP.  Read their API docs too:
-
-L<http://myeve.eve-online.com/api/doc/>
-
-=cut
-
-use Moose;
-
-use URI;
-use LWP::Simple qw();
-use XML::Simple qw();
-use Carp qw( croak );
-
-#use Data::Dumper qw( Dumper );
-#use File::Slurp qw(write_file);
-
-=head1 ATTRIBUTES
-
-These attributes may be passed as part of object construction (as arguments
-to the new() method) or they can be later set as method calls themselves.
-
-=head2 user_id
-
-  my $user_id = $eapi->user_id();
-  $eapi->user_id( $user_id );
-
-An Eve Online API user ID.
-
-=head2 api_key
-
-  my $api_key = $eapi->api_key();
-  $eapi->api_key( $api_key );
-
-The key, as provided Eve Online, to access the API.
-
-=head2 character_id
-
-  my $character_id = $eapi->character_id();
-  $eapi->character_id( $character_id );
-
-The ID of an Eve character.  This will be set automatically
-by any methods (such as skill_in_training()) when you pass
-them a character_id.  If so, any methods that require a
-character ID, will default to using the character ID provided
-here.
-
-=head2 api_url
-
-The URL that will be used to access the Eve Online API.
-Default to L<http://api.eve-online.com>.  Normally you
-won't want to change this.
-
-=cut
-
-has 'user_id'      => (is=>'rw', isa=>'Int', default=>0 );
-has 'api_key'      => (is=>'rw', isa=>'Str', default=>'' );
-has 'character_id' => (is=>'rw', isa=>'Int', default=>0 );
-has 'api_url'      => (is=>'rw', isa=>'Str', default=>'https://api.eveonline.com');
-has 'test_xml'     => (is=>'rw', isa=>'Str', default=>'' );
-
-=head1 METHODS
+=head1 A NOTE ON CACHING
 
 Most of these methods return a 'cached_until' value.  I've no clue if this
 is CCP telling you how long you should cache the information before you
@@ -109,34 +42,47 @@ their cache of this information.
 Either way, it is good etiquet to follow the cacheing guidelines of a
 provider.  If you over-use the API I'm sure you'll eventually get blocked.
 
-=head2 skill_tree
+=cut
 
-  my $skill_groups = $eapi->skill_tree();
+use Types::Standard qw( Int Str );
 
-Returns a complex data structure containing the entire skill tree.
-The data structure is:
+use URI;
+use LWP::Simple qw();
+use XML::Simple qw();
+use Carp qw( croak );
 
-  {
-    cached_until => $date_time,
-    $group_id => {
-      name => $group_name,
-      skills => {
-        $skill_id => {
-          name => $skill_name,
-          description => $skill_description,
-          rank => $skill_rank,
-          primary_attribute => $skill_primary_attribute,
-          secondary_attribute => $skill_secondary_attribute,
-          bonuses => {
-            $bonus_name => $bonus_value,
-          },
-          required_skills => {
-            $skill_id => $skill_level,
-          },
-        }
-      }
-    }
-provider.  If you over-use the API I'm sure you'll eventually get blocked.
+=head1 ARGUMENTS
+
+=head2 user_id
+
+An Eve Online API user ID (also known as a keyID).
+
+=head2 api_key
+
+The key, as provided Eve Online, to access the API (also known
+as a vCode).
+
+=head2 character_id
+
+Set the default C<character_id>.  Any methods that require
+a characte ID, and are not given one, will use this one.
+
+=head2 api_url
+
+The URL that will be used to access the Eve Online API.
+Defaults to L<https://api.eveonline.com>.  Normally you
+won't want to change this.
+
+=cut
+
+has user_id      => (is=>'ro', isa=>Int );
+has api_key      => (is=>'ro', isa=>Str );
+has character_id => (is=>'ro', isa=>Int );
+has api_url      => (is=>'ro', isa=>Str, default=>'https://api.eveonline.com');
+
+=head1 ANONYMOUS METHODS
+
+These methods may be called anonymously, without authentication.
 
 =head2 skill_tree
 
@@ -172,7 +118,7 @@ The data structure is:
 sub skill_tree {
     my ($self) = @_;
 
-    my $data = $self->load_xml(
+    my $data = $self->_load_xml(
         path => 'eve/SkillTree.xml.aspx',
     );
 
@@ -226,7 +172,7 @@ the value of the title of the ref type.
 sub ref_types {
     my ($self) = @_;
 
-    my $data = $self->load_xml(
+    my $data = $self->_load_xml(
         path => 'eve/RefTypes.xml.aspx',
     );
 
@@ -260,7 +206,7 @@ value is a hashref with the keys:
 sub sovereignty {
     my ($self) = @_;
 
-    my $data = $self->load_xml(
+    my $data = $self->_load_xml(
         path => 'map/Sovereignty.xml.aspx',
     );
 
@@ -281,6 +227,11 @@ sub sovereignty {
 
     return $systems;
 }
+
+=head1 RESTRICTED METHODS
+
+These methods require authentication to use, so you must have set
+the L</user_id> and L</api_key> arguments to use them.
 
 =head2 characters
 
@@ -303,7 +254,7 @@ Here's a sample:
 sub characters {
     my ($self) = @_;
 
-    my $data = $self->load_xml(
+    my $data = $self->_load_xml(
         path          => 'account/Characters.xml.aspx',
         requires_auth => 1,
     );
@@ -370,13 +321,13 @@ a sample:
 sub character_sheet {
     my ($self, %args) = @_;
 
-    $self->character_id( $args{character_id} ) if ($args{character_id});
-    croak('No character_id specified') if (!$self->character_id());
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') if !$character_id;
 
-    my $data = $self->load_xml(
-        path                  => 'char/CharacterSheet.xml.aspx',
-        requires_auth         => 1,
-        requires_character_id => 1,
+    my $data = $self->_load_xml(
+        path          => 'char/CharacterSheet.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
     );
     my $result = $data->{result};
 
@@ -437,13 +388,13 @@ Returns a hashref with the following structure:
 sub skill_in_training {
     my ($self, %args) = @_;
 
-    $self->character_id( $args{character_id} ) if ($args{character_id});
-    croak('No character_id specified') if (!$self->character_id());
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') if !$character_id;
 
-    my $data = $self->load_xml(
-        path                  => 'char/SkillInTraining.xml.aspx',
-        requires_auth         => 1,
-        requires_character_id => 1,
+    my $data = $self->_load_xml(
+        path          => 'char/SkillInTraining.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
     );
     my $result = $data->{result};
 
@@ -464,66 +415,42 @@ sub skill_in_training {
     return $training;
 }
 
-=head2 load_xml
+sub _load_xml {
+    my $self = shift;
 
-  my $data = $eapi->load_xml(
-    path  => 'some/FeedThing.xml.aspx',
-    requires_auth         => 1,  # Optional.  Default is 0 (false).
-    requires_character_id => 1,  # Optional.  Default is 0 (false).
-  );
+    my $xml = $self->_retrieve_xml( @_ );
 
-Calls the specified path (prepended with the api_url), passes any
-parameters, and parses the resulting XML in to a perl complex
-data structure.
-
-Normally you will not want to use this directly, as all of the
-available Eve APIs are implemented in this module.
-
-=cut
-
-sub load_xml {
-    my ($self, %args) = @_;
-
-    my $xml_source;
-
-    if ($self->test_xml()) {
-        $xml_source = $self->test_xml();
-    }
-    else {
-        croak('No feed path provided') if (!$args{path});
-
-        my $params = {};
-
-        if ($args{requires_auth}) {
-            $params->{keyID} = $self->user_id();
-            $params->{vCode} = $self->api_key();
-        }
-
-        if ($args{requires_character_id}) {
-            $params->{characterID} = $self->character_id();
-        }
-
-        my $uri = URI->new( $self->api_url() . '/' . $args{path} );
-        $uri->query_form( $params );
-
-        $xml_source = LWP::Simple::get( $uri->as_string() );
-    }
-
-    my $data = $self->parse_xml( $xml_source );
+    my $data = $self->_parse_xml( $xml );
     die('Unsupported EveOnline API XML version (requires version 2)') if ($data->{version} != 2);
 
     return $data;
 }
 
-=head2 parse_xml
+sub _retrieve_xml {
+    my ($self, %args) = @_;
 
-  my $data = $eapi->parse_xml( $some_xml );
+    croak('No feed path provided') if !$args{path};
 
-A very lightweight wrapper around L<XML::Simple>.
+    my $params = {};
 
-=cut
+    if ($args{requires_auth}) {
+        $params->{keyID} = $self->user_id();
+        $params->{vCode} = $self->api_key();
+    }
 
-sub parse_xml {
+    if ($args{character_id}) {
+        $params->{characterID} = $args{character_id};
+    }
+
+    my $uri = URI->new( $self->api_url() . '/' . $args{path} );
+    $uri->query_form( $params );
+
+    my $xml = LWP::Simple::get( $uri->as_string() );
+
+    return $xml;
+}
+
+sub _parse_xml {
     my ($self, $xml) = @_;
 
     my $data = XML::Simple::XMLin(
@@ -542,7 +469,9 @@ __END__
 
 =over
 
-=item L<WebService::EveOnline>
+=item *
+
+L<WebService::EveOnline>
 
 =back
 
@@ -554,7 +483,9 @@ Aran Clary Deltac <bluefeet@gmail.com>
 
 =over
 
-=item Andrey Chips Kuzmin <chipsoid@cpan.org>
+=item *
+
+Andrey Chips Kuzmin <chipsoid@cpan.org>
 
 =back
 

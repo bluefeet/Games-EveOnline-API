@@ -1,15 +1,35 @@
 #!/usr/bin/perl -w
-use strict;
-use warnings;
+use strictures 1;
 
-use Test::More tests => 6;
-use English qw(-no_match_vars);
-use Games::EveOnline::API;
+use Test::More;
 
-my $api = Games::EveOnline::API->new();
-$api->user_id( 3243311 );
-$api->api_key( 'j2Eahd8WMABRb5cc3d304Ox1DJVFvY1fu2a0MmGbgq02bymX2ncOCn19CK4G3rk9' );
-$api->character_id( 1972081734 );
+{
+    package Games::EveOnline::API::LocalTest;
+    use Moo;
+    extends 'Games::EveOnline::API';
+
+    sub _retrieve_xml {
+        my ($self, %args) = @_;
+
+        my $file = $args{path};
+
+        $file =~ s{/}{-}g;
+        $file =~ s{\.aspx$}{};
+
+        $file = "t/$file";
+
+        die "Cannot find $file" if !-f $file;
+
+        open( my $fh, '<', $file );
+        my $xml = do { local $/; <$fh> };
+
+        return $xml;
+    }
+}
+
+my $api = Games::EveOnline::API::LocalTest->new(
+    character_id => 1234,
+);
 
 my $feeds = [qw(
     skill_tree
@@ -21,22 +41,25 @@ my $feeds = [qw(
 )];
 
 foreach my $feed (@$feeds) {
-    $api->test_xml( "t/$feed.xml" );
     my $api_data = $api->$feed();
 
-    my $dump = read_file( "t/$feed.dump" );
-    my $dump_data = eval( $dump );
-    die("Unable to eval $feed dump: $EVAL_ERROR") if ($EVAL_ERROR);
+    my $file = "t/$feed.dump";
+    die "Cannot find $file" if !-f $file;
 
-    is_deeply( $api_data, $dump_data, "API result matches dumped result for $feed" );
+    open( my $fh, '<', $file );
+    my $dump = do { local $/; <$fh> };
+
+    my $dump_data = do {
+        local $@;
+        my $data = eval( $dump );
+        die("Unable to eval $feed dump: $@") if !$data;
+        $data;
+    };
+
+    is_deeply(
+        $api_data, $dump_data,
+        "API result matches dumped result for $feed",
+    );
 }
 
-sub read_file {
-    my ($file) = @_;
-
-    open my $fh, '<', $file or die "Failed to open '$file': $OS_ERROR";
-    my $content = do { local $INPUT_RECORD_SEPARATOR; <$fh> };
-
-    return $content;
-}
-
+done_testing;
