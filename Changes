@@ -2,6 +2,10 @@ Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
 
+0.04
+ - Fix params for API EveOnline
+ - Fix tests skill_tree
+
 0.03
  - Broke parse_xml() out of load_xml(), just for the sake of separation.
  - Added Devel::Coverage metrics to the POD.

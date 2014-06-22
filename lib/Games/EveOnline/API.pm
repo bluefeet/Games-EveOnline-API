@@ -47,7 +47,7 @@ L<http://myeve.eve-online.com/api/doc/>
 
 use Moose;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use URI;
 use LWP::Simple qw();
@@ -98,8 +98,7 @@ won't want to change this.
 has 'user_id'      => (is=>'rw', isa=>'Int', default=>0 );
 has 'api_key'      => (is=>'rw', isa=>'Str', default=>'' );
 has 'character_id' => (is=>'rw', isa=>'Int', default=>0 );
-has 'api_url'      => (is=>'rw', isa=>'Str', default=>'http://api.eve-online.com');
-
+has 'api_url'      => (is=>'rw', isa=>'Str', default=>'https://api.eveonline.com');
 has 'test_xml'     => (is=>'rw', isa=>'Str', default=>'' );
 
 =head1 METHODS
@@ -498,8 +497,8 @@ sub load_xml {
         my $params = {};
 
         if ($args{requires_auth}) {
-            $params->{userID} = $self->user_id();
-            $params->{apiKey} = $self->api_key();
+            $params->{keyID} = $self->user_id();
+            $params->{vCode} = $self->api_key();
         }
 
         if ($args{requires_character_id}) {
@@ -552,6 +551,7 @@ __END__
 =head1 AUTHOR
 
 Aran Clary Deltac <bluefeet@cpan.org>
+Andrey Chips Kuzmin <chipsoid@cpan.org>
 
 =head1 LICENSE
 

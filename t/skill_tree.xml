@@ -31,9 +31,7 @@
             <rowset name="skillBonusCollection" key="bonusType" columns="bonusType,bonusValue" />
           </row>
           <row typeName="Corporation Management" groupID="266" typeID="3363">
-            <description>Basic corporation operation. +10 corporation members allowed per level.
-
-Notice:  the CEO must update his corporation through the corporation user interface before the skill takes effect</description>
+            <description>Basic corporation operation. +10 corporation members allowed per level.</description>
             <rank>1</rank>
             <rowset name="requiredSkills" key="typeID" columns="typeID,skillLevel" />
             <requiredAttributes>
@@ -45,9 +43,7 @@ Notice:  the CEO must update his corporation through the corporation user interf
             </rowset>
           </row>
           <row typeName="Empire Control" groupID="266" typeID="3732">
-            <description>Advanced corporation operation. +200 corporation members allowed per level. 
-
-Notice:  the CEO must update his corporation through the corporation user interface before the skill takes effect</description>
+            <description>Advanced corporation operation. +200 corporation members allowed per level.</description>
             <rank>5</rank>
             <rowset name="requiredSkills" key="typeID" columns="typeID,skillLevel">
               <row typeID="3731" skillLevel="5" />
@@ -61,9 +57,7 @@ Notice:  the CEO must update his corporation through the corporation user interf
             </rowset>
           </row>
           <row typeName="Ethnic Relations" groupID="266" typeID="3368">
-            <description>Skill at operating multiracial corporations. Extra 20% corporation members of other race than CEO allowed per skill level.  Percentage is based on CEO's corporation management skills, not the number of people in the corporation.
-
-Note:  the CEO must update his corporation through the corporation user interface before the skill takes effect.</description>
+            <description>Skill at operating multiracial corporations. Extra 20% corporation members of other race than CEO allowed per skill level.  Percentage is based on CEO's corporation management skills, not the number of people in the corporation.</description>
             <rank>2</rank>
             <rowset name="requiredSkills" key="typeID" columns="typeID,skillLevel">
               <row typeID="3363" skillLevel="2" />
@@ -78,9 +72,7 @@ Note:  the CEO must update his corporation through the corporation user interfac
             </rowset>
           </row>
           <row typeName="Megacorp Management" groupID="266" typeID="3731">
-            <description>Advanced corporation operation. +50 members per level.
-
-Notice:  the CEO must update his corporation through the corporation user interface before the skill takes effect</description>
+            <description>Advanced corporation operation. +50 members per level.</description>
             <rank>3</rank>
             <rowset name="requiredSkills" key="typeID" columns="typeID,skillLevel">
               <row typeID="3363" skillLevel="5" />
@@ -94,9 +86,7 @@ Notice:  the CEO must update his corporation through the corporation user interf
             </rowset>
           </row>
           <row typeName="Sovereignty" groupID="266" typeID="12241">
-            <description>Advanced corporation operation. +1000 corporation members allowed per level. 
-
-Notice:  the CEO must update his corporation through the corporation user interface before the skill takes effect</description>
+            <description>Advanced corporation operation. +1000 corporation members allowed per level.</description>
             <rank>8</rank>
             <rowset name="requiredSkills" key="typeID" columns="typeID,skillLevel">
               <row typeID="3732" skillLevel="5" />
@@ -110,11 +100,7 @@ Notice:  the CEO must update his corporation through the corporation user interf
             </rowset>
           </row>
           <row typeName="Starbase Defense Management" groupID="266" typeID="3373">
-            <description>Skill at using starbase weapon systems. Allows control of one array per level. Arrays must be placed outside of the forcefield to be controlled. 
-
-Can not be trained on Trial Accounts.
-
-</description>
+            <description>Skill at using starbase weapon systems. Allows control of one array per level. Arrays must be placed outside of the forcefield to be controlled.</description>
             <rank>7</rank>
             <rowset name="requiredSkills" key="typeID" columns="typeID,skillLevel">
               <row typeID="11584" skillLevel="5" />
