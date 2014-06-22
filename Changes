@@ -1,10 +1,8 @@
 Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
-
-0.04
- - Fix params for API EveOnline
- - Fix tests skill_tree
+ - Fix params for API EveOnline (chipsoid)
+ - Fix tests skill_tree (chipsoid)
 
 0.03
  - Broke parse_xml() out of load_xml(), just for the sake of separation.

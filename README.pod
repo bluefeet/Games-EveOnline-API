@@ -1,3 +1,5 @@
+=pod
+
 =head1 NAME
 
 Games::EveOnline::API - A simple Perl wrapper around the EveOnline XML API.
@@ -274,10 +276,19 @@ A very lightweight wrapper around L<XML::Simple>.
 
 =head1 AUTHOR
 
-Aran Clary Deltac <bluefeet@cpan.org>
+Aran Clary Deltac <bluefeet@gmail.com>
+
+=head1 CONTRIBUTORS
+
+=over
+
+=item Andrey Chips Kuzmin <chipsoid@cpan.org>
+
+=back
 
 =head1 LICENSE
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
+=cut

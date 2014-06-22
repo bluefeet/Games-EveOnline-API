@@ -47,8 +47,6 @@ L<http://myeve.eve-online.com/api/doc/>
 
 use Moose;
 
-our $VERSION = '0.04';
-
 use URI;
 use LWP::Simple qw();
 use XML::Simple qw();
@@ -550,8 +548,15 @@ __END__
 
 =head1 AUTHOR
 
-Aran Clary Deltac <bluefeet@cpan.org>
-Andrey Chips Kuzmin <chipsoid@cpan.org>
+Aran Clary Deltac <bluefeet@gmail.com>
+
+=head1 CONTRIBUTORS
+
+=over
+
+=item Andrey Chips Kuzmin <chipsoid@cpan.org>
+
+=back
 
 =head1 LICENSE
 
