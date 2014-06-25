@@ -373,7 +373,7 @@ sub character_sheet {
     my ($self, %args) = @_;
 
     $self->character_id( $args{character_id} ) if ($args{character_id});
-    croak('No character_id specified') if (!$self->character_id());
+    croak('No character_id specified') unless $self->character_id();
 
     my $data = $self->load_xml(
         path                  => 'char/CharacterSheet.xml.aspx',
@@ -449,7 +449,7 @@ sub skill_in_training {
     );
     my $result = $data->{result};
 
-    return() if (!$result->{skillInTraining});
+    return()  unless $result->{skillInTraining};
 
     my $training = {
         current_tq_time => $result->{currentTQTime},
@@ -465,6 +465,46 @@ sub skill_in_training {
 
     return $training;
 }
+
+sub api_key_info {
+    my ($self) = @_;
+
+    my $data = $self->load_xml(
+        path                  => 'account/ApiKeyInfo.xml.aspx',
+        requires_auth         => 1,
+    );
+
+    my $result = $data->{result}->{key};
+
+    return() unless $result->{type};
+
+    my $key_info = {
+        type    => $result->{type},
+        expires => $result->{expires},
+        access_mask => $result->{accessMask},
+    };
+
+    # TODO: add structure for corporation and alliance API
+    if ( defined $result->{rowset}->{row} && $result->{type} eq 'Account' ) {
+        $key_info->{characters} = {};
+        foreach my $char_id ( keys %{ $result->{rowset}->{row} } ) {
+            $key_info->{characters}->{$char_id} = {
+                'character_name'   => $result->{rowset}->{row}->{$char_id}->{characterName},
+                'faction_name'     => $result->{rowset}->{row}->{$char_id}->{factionName} || '',
+                'corporation_id'   => $result->{rowset}->{row}->{$char_id}->{corporationID},
+                'alliance_name'    => $result->{rowset}->{row}->{$char_id}->{allianceName} || '',
+                'faction_id'       => $result->{rowset}->{row}->{$char_id}->{factionID} || '0',
+                'corporation_name' => $result->{rowset}->{row}->{$char_id}->{corporationName},
+                'alliance_id'      => $result->{rowset}->{row}->{$char_id}->{allianceID} || '0',
+            };
+        }
+    }
+
+    $key_info->{cached_until} = $data->{cachedUntil};
+
+    return $key_info;
+}
+
 
 =head2 load_xml
 
@@ -492,7 +532,7 @@ sub load_xml {
         $xml_source = $self->test_xml();
     }
     else {
-        croak('No feed path provided') if (!$args{path});
+        croak('No feed path provided') unless $args{path};
 
         my $params = {};
 
