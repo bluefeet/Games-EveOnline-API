@@ -2,9 +2,15 @@ Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
 
-0.04
- - Fix params for API EveOnline
- - Fix tests skill_tree
+0.05      2014-06-22
+ - Use Moo and Type::Tiny instead of Moose.
+ - Make this class have immutable attributes.
+ - Remove test code from the core module.
+ - Lots of documentation edits.
+
+0.04      2014-06-22
+ - Fix params for API EveOnline (chipsoid)
+ - Fix tests skill_tree (chipsoid)
 
 0.03
  - Broke parse_xml() out of load_xml(), just for the sake of separation.
