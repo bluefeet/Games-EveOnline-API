@@ -133,10 +133,10 @@ sub skill_tree {
         my $skill_rows = $group_rows->{$group_id}->{rowset}->{row};
         foreach my $skill_id (keys %$skill_rows) {
             my $skill_result = $group_result->{skills}->{$skill_id} ||= {};
-            $skill_result->{name} = $skill_rows->{$skill_id}->{typeName};
-            $skill_result->{description} = $skill_rows->{$skill_id}->{description};
-            $skill_result->{rank} = $skill_rows->{$skill_id}->{rank};
-            $skill_result->{primary_attribute} = $skill_rows->{$skill_id}->{requiredAttributes}->{primaryAttribute};
+            $skill_result->{name}                = $skill_rows->{$skill_id}->{typeName};
+            $skill_result->{description}         = $skill_rows->{$skill_id}->{description};
+            $skill_result->{rank}                = $skill_rows->{$skill_id}->{rank};
+            $skill_result->{primary_attribute}   = $skill_rows->{$skill_id}->{requiredAttributes}->{primaryAttribute};
             $skill_result->{secondary_attribute} = $skill_rows->{$skill_id}->{requiredAttributes}->{secondaryAttribute};
 
             $skill_result->{bonuses} = {};
@@ -215,11 +215,11 @@ sub sovereignty {
     my $rows = $data->{result}->{rowset}->{row};
     foreach my $system_id (keys %$rows) {
         my $system = $systems->{$system_id} = {};
-        $system->{name} = $rows->{$system_id}->{solarSystemName};
-        $system->{faction_id} = $rows->{$system_id}->{factionID};
-        $system->{sovereignty_level} = $rows->{$system_id}->{sovereigntyLevel};
+        $system->{name}                      = $rows->{$system_id}->{solarSystemName};
+        $system->{faction_id}                = $rows->{$system_id}->{factionID};
+        $system->{sovereignty_level}         = $rows->{$system_id}->{sovereigntyLevel};
         $system->{constellation_sovereignty} = $rows->{$system_id}->{constellationSovereignty};
-        $system->{alliance_id} = $rows->{$system_id}->{allianceID};
+        $system->{alliance_id}               = $rows->{$system_id}->{allianceID};
     }
 
     $systems->{cached_until} = $data->{cachedUntil};
@@ -402,18 +402,53 @@ sub skill_in_training {
 
     my $training = {
         current_tq_time => $result->{currentTQTime},
-        skill_id => $result->{trainingTypeID},
-        to_level => $result->{trainingToLevel},
-        start_time => $result->{trainingStartTime},
-        end_time => $result->{trainingEndTime},
-        start_sp => $result->{trainingStartSP},
-        end_sp => $result->{trainingDestinationSP},
+        skill_id        => $result->{trainingTypeID},
+        to_level        => $result->{trainingToLevel},
+        start_time      => $result->{trainingStartTime},
+        end_time        => $result->{trainingEndTime},
+        start_sp        => $result->{trainingStartSP},
+        end_sp          => $result->{trainingDestinationSP},
     };
 
     $training->{cached_until} = $data->{cachedUntil};
 
     return $training;
 }
+
+=head2 api_key_info
+
+  my $api_info = $eapi->api_key_info();
+
+Returns a hashref with the following structure:
+
+  {
+    'cached_until' => '2014-06-26 16:57:40',
+    'type' => 'Account',
+    'access_mask' => '268435455',
+    'characters' => {
+      '12345678' => {
+        'faction_id' => '0',
+        'character_name' => 'Char Name',
+        'corporation_name' => 'School of Applied Knowledge',
+        'faction_name' => '',
+        'alliance_id' => '0',
+        'corporation_id' => '1000044',
+        'alliance_name' => ''
+      },
+      '87654321' => {
+        'faction_id' => '0',
+        'character_name' => 'Char Name2',
+        'corporation_name' => 'Corp Name',
+        'faction_name' => '',
+        'alliance_id' => '1234567890',
+        'corporation_id' => '987654321',
+        'alliance_name' => 'Alliance Name'
+      }
+    },
+    'expires' => ''
+  }
+
+=cut
 
 sub api_key_info {
     my ($self) = @_;
@@ -454,6 +489,22 @@ sub api_key_info {
     return $key_info;
 }
 
+=head2 account_status
+
+  my $account_status = $eapi->account_status();
+
+Returns a hashref with the following structure:
+
+  {
+    'cachedUntil' => '2014-06-26 17:17:12',
+    'logon_minutes' => '79114',
+    'logon_count' => '940',
+    'create_date' => '2011-06-22 11:44:37',
+    'paid_until' => '2014-08-26 16:37:43'
+  }
+
+=cut
+
 sub account_status {
     my ($self) = @_;
 
@@ -475,6 +526,47 @@ sub account_status {
     }
 }
 
+=head2 character_info
+
+  my $character_info = $eapi->character_info( character_id => $character_id );
+
+Returns a hashref with the following structure:
+
+  {
+    'character_name' => 'Char Name',
+    'alliance_id' => '1234567890',
+    'corporation_id' => '987654321',
+    'corporation' => 'Corp Name',
+    'alliance' => 'Alliance Name',
+    'race' => 'Caldari',
+    'bloodline' => 'Achura',
+    'skill_points' => '40955856',
+    'employment_history' => {
+      '23046655' => {
+        'corporation_id' => '123456789',
+        'start_date' => '2013-02-03 13:39:00',
+        'record_id' => '23046655'
+      },
+      '29131760' => {
+        'corporation_id' => '987654321',
+        'start_date' => '2013-11-04 16:40:00',
+        'record_id' => '29131760'
+      },
+    },
+    'ship_type_id' => '670',
+    'account_balance' => '38131.68',
+    'cached_until' => '2014-06-26 17:18:29',
+    'last_known_location' => 'Jita',
+    'character_id' => '12345678',
+    'alliance_date' => '2012-08-05 00:12:00',
+    'corporation_date' => '2012-09-11 20:32:00',
+    'ship_type_name' => 'Capsule',
+    'security_status' => '1.3534973114985',
+    'ship_name' => 'Char Name Capsule'
+  }
+
+=cut
+
 sub character_info {
     my ($self, %args) = @_;
 
@@ -482,7 +574,7 @@ sub character_info {
     croak('No character_id specified') unless $character_id;
 
     my $data = $self->_load_xml(
-        path          => '/eve/CharacterInfo.xml.aspx',
+        path          => 'eve/CharacterInfo.xml.aspx',
         requires_auth => 1,
         character_id  => $character_id,
     );
@@ -521,6 +613,160 @@ sub character_info {
     }
 
     return $info;
+}
+
+=head2 asset_list
+
+  my $asset_list = $eapi->asset_list( character_id => $character_id );
+
+Returns a hashref with the following structure:
+
+  {
+    '1014951232473' => {
+      'contents' => {
+        '1014957890964' => {
+          'type_id' => '2454',
+          'quantity' => '1',
+          'flag' => '87',
+          'raw_quantity' => '-1',
+          'singleton' => '1',
+          'item_id' => '1014957890964'
+        }
+      },
+      'quantity' => '1',
+      'flag' => '4',
+      'location_id' => '60014680',
+      'singleton' => '1',
+      'item_id' => '1014951232473',
+      'type_id' => '32880',
+      'raw_quantity' => '-1'
+    },
+    '1014951385057' => {
+      'type_id' => '1178',
+      'quantity' => '1',
+      'flag' => '4',
+      'raw_quantity' => '-2',
+      'location_id' => '60015001',
+      'singleton' => '1',
+      'item_id' => '1014951385057'
+    }
+  }
+
+=cut
+
+sub asset_list {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $data = $self->_load_xml(
+        path          => 'char/AssetList.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+    );
+
+    my $result = $data->{result};
+
+    return() unless $result->{rowset}->{row};
+
+    return $self->_parse_assets( $result );
+}
+
+=head2 contact_list
+
+  my $contact_list = $eapi->contact_list();
+
+Returns a hashref with the following structure:
+
+  {
+    'contact_list' => {
+      '962693552' => {
+        'standing' => '10',
+        'contact_name' => 'Char Name',
+        'contact_id' => '962693552',
+        'in_watchlist' => undef,
+        'contact_type_id' => '1384'
+      },
+      '3019494' => {
+        'standing' => '0',
+        'contact_name' => 'Char Name 3',
+        'contact_id' => '3019494',
+        'in_watchlist' => undef,
+        'contact_type_id' => '1375'
+      },
+      '1879838281' => {
+        'standing' => '10',
+        'contact_name' => 'Char Name 2',
+        'contact_id' => '1879838281',
+        'in_watchlist' => undef,
+        'contact_type_id' => '1378'
+      }
+    }
+  }
+
+=cut
+
+sub contact_list {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $data = $self->_load_xml(
+        path          => 'char/ContactList.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+    );
+
+    my $result = $data->{result};
+
+    return() unless $result->{rowset};
+
+    my $contacts;
+    foreach my $rows ( keys %{$result->{rowset}} ) {
+        next unless defined $result->{rowset}->{$rows}->{row};
+        my $key = $rows; 
+        $key =~ s/L/_l/;
+        $key =~ s/C/_c/; # TODO: more correctly regexp
+        foreach my $contact_id ( keys %{ $result->{rowset}->{$rows}->{row} } ) {
+            $contacts->{$key}->{$contact_id}->{contact_id}      = $contact_id;
+            $contacts->{$key}->{$contact_id}->{standing}        = $result->{rowset}->{$rows}->{row}->{$contact_id}->{standing};
+            $contacts->{$key}->{$contact_id}->{contact_name}    = $result->{rowset}->{$rows}->{row}->{$contact_id}->{contactName};
+            $contacts->{$key}->{$contact_id}->{contact_type_id} = $result->{rowset}->{$rows}->{row}->{$contact_id}->{contactTypeID};
+            if ( $rows eq 'contactList' ) {
+                $contacts->{$key}->{$contact_id}->{in_watchlist} = $result->{rowset}->{$rows}->{row}->{$contact_id}->{inWatchlist};
+            }
+        }
+    }
+
+    return $contacts;
+}
+
+# convert keys
+sub _parse_assets {
+    my ($self, $xml) = @_;
+
+    return () unless $xml;
+
+    my $parsed;
+    my $rows = $xml->{rowset}->{row};
+
+    foreach my $id ( keys %$rows ) {
+        $parsed->{$id}->{item_id}      = $id;
+        $parsed->{$id}->{location_id}  = $rows->{$id}->{locationID} if $rows->{$id}->{locationID};
+        $parsed->{$id}->{raw_quantity} = $rows->{$id}->{rawQuantity};
+        $parsed->{$id}->{quantity}     = $rows->{$id}->{quantity};
+        $parsed->{$id}->{flag}         = $rows->{$id}->{flag};
+        $parsed->{$id}->{singleton}    = $rows->{$id}->{singleton};
+        $parsed->{$id}->{type_id}      = $rows->{$id}->{typeID};
+
+        if ( $rows->{$id}->{rowset} && $rows->{$id}->{rowset}->{name} eq 'contents' ) {
+            $parsed->{$id}->{contents} = $self->_parse_assets( $rows->{$id} );
+        }
+    }
+
+    return $parsed;
 }
 
 sub _load_xml {
@@ -564,7 +810,7 @@ sub _parse_xml {
     my $data = XML::Simple::XMLin(
         $xml,
         ForceArray => ['row'],
-        KeyAttr    => ['characterID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name'],
+        KeyAttr    => ['characterID', 'itemID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
     );
 
     return $data;

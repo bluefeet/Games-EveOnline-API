@@ -38,6 +38,11 @@ my $feeds = [qw(
     characters
     character_sheet
     skill_in_training
+    api_key_info
+    account_status
+    character_info
+    asset_list
+    contact_list
 )];
 
 foreach my $feed (@$feeds) {

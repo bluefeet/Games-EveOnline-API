@@ -2,6 +2,11 @@ Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
 
+0.06      2014-06-26
+ - add api_key_info, account_status, character_info, asset_list, contact_list 
+   functions for API (chipsoid)
+ - add itemID and contactID to forceArray attribute in xml2hash converter
+
 0.05      2014-06-22
  - Use Moo and Type::Tiny instead of Moose.
  - Make this class have immutable attributes.
