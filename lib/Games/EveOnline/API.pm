@@ -322,7 +322,7 @@ sub character_sheet {
     my ($self, %args) = @_;
 
     my $character_id = $args{character_id} || $self->character_id();
-    croak('No character_id specified') if !$character_id;
+    croak('No character_id specified') unless $character_id;
 
     my $data = $self->_load_xml(
         path          => 'char/CharacterSheet.xml.aspx',
@@ -389,7 +389,7 @@ sub skill_in_training {
     my ($self, %args) = @_;
 
     my $character_id = $args{character_id} || $self->character_id();
-    croak('No character_id specified') if !$character_id;
+    croak('No character_id specified') unless $character_id;
 
     my $data = $self->_load_xml(
         path          => 'char/SkillInTraining.xml.aspx',
@@ -418,7 +418,7 @@ sub skill_in_training {
 sub api_key_info {
     my ($self) = @_;
 
-    my $data = $self->load_xml(
+    my $data = $self->_load_xml(
         path                  => 'account/ApiKeyInfo.xml.aspx',
         requires_auth         => 1,
     );
@@ -452,6 +452,75 @@ sub api_key_info {
     $key_info->{cached_until} = $data->{cachedUntil};
 
     return $key_info;
+}
+
+sub account_status {
+    my ($self) = @_;
+
+    my $data = $self->_load_xml(
+        path                  => 'account/AccountStatus.xml.aspx',
+        requires_auth         => 1,
+    );
+
+    my $result = $data->{result};
+
+    return() unless $result->{createDate};
+
+    return {
+        paid_until    => $result->{paidUntil},
+        create_date   => $result->{createDate},
+        logon_count   => $result->{logonCount},
+        logon_minutes => $result->{logonMinutes},
+        cachedUntil   => $data->{cachedUntil},
+    }
+}
+
+sub character_info {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $data = $self->_load_xml(
+        path          => '/eve/CharacterInfo.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+    );
+
+    my $result = $data->{result};
+
+    return() unless $result->{characterID};
+
+    my $info = {
+        character_id        => $result->{characterID},
+        character_name      => $result->{characterName}, 
+        race                => $result->{race}, 
+        bloodline           => $result->{bloodline}, 
+        account_balance     => $result->{accountBalance}, 
+        skill_points        => $result->{skillPoints}, 
+        ship_name           => $result->{shipName}, 
+        ship_type_id        => $result->{shipTypeID}, 
+        ship_type_name      => $result->{shipTypeName}, 
+        corporation_id      => $result->{corporationID}, 
+        corporation         => $result->{corporation}, 
+        corporation_date    => $result->{corporationDate}, 
+        alliance_id         => $result->{allianceID}, 
+        alliance            => $result->{alliance}, 
+        alliance_date       => $result->{allianceDate}, 
+        last_known_location => $result->{lastKnownLocation}, 
+        security_status     => $result->{securityStatus},
+        cached_until        => $data->{cachedUntil},
+    };
+
+    if ( defined $result->{rowset}->{row} ) {
+        foreach my $history_row ( @{$result->{rowset}->{row}} ) {
+            $info->{employment_history}->{$history_row->{recordID}}->{record_id}      = $history_row->{recordID};
+            $info->{employment_history}->{$history_row->{recordID}}->{corporation_id} = $history_row->{corporationID};
+            $info->{employment_history}->{$history_row->{recordID}}->{start_date}     = $history_row->{startDate};
+        }
+    }
+
+    return $info;
 }
 
 sub _load_xml {
