@@ -2,6 +2,9 @@ Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
 
+0.07      2014-06-28
+ - fix character_sheet function and test for it (chipsoid)
+
 0.06      2014-06-26
  - add api_key_info, account_status, character_info, asset_list, contact_list 
    functions for API (chipsoid)

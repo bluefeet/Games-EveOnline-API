@@ -1,121 +1,78 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0'?>
 <eveapi version="2">
-  <currentTime>2008-05-26 06:23:25</currentTime>
+  <currentTime>2014-06-28 11:43:34</currentTime>
   <result>
-    <characterID>1972081734</characterID>
-    <name>Ardent Dawn</name>
-    <race>Amarr</race>
-    <bloodLine>Amarr</bloodLine>
-    <gender>Male</gender>
-    <corporationName>Bellator Apparatus</corporationName>
-    <corporationID>1044143901</corporationID>
-    <balance>63651122.35</balance>
+    <characterID>94701913</characterID>
+    <name>Milolika Muvila</name>
+    <DoB>2014-06-05 19:55:49</DoB>
+    <race>Caldari</race>
+    <bloodLine>Civire</bloodLine>
+    <ancestry>Entrepreneurs</ancestry>
+    <gender>Female</gender>
+    <corporationName>School of Applied Knowledge</corporationName>
+    <corporationID>1000044</corporationID>
+    <cloneName>Clone Grade Delta</cloneName>
+    <cloneSkillPoints>2800000</cloneSkillPoints>
+    <balance>21418322.39</balance>
     <attributeEnhancers>
-      <memoryBonus>
-        <augmentatorName>Memory Augmentation - Basic</augmentatorName>
-        <augmentatorValue>3</augmentatorValue>
-      </memoryBonus>
-      <willpowerBonus>
-        <augmentatorName>Neural Boost - Basic</augmentatorName>
-        <augmentatorValue>3</augmentatorValue>
-      </willpowerBonus>
       <intelligenceBonus>
         <augmentatorName>Cybernetic Subprocessor - Basic</augmentatorName>
         <augmentatorValue>3</augmentatorValue>
       </intelligenceBonus>
-      <charismaBonus>
-        <augmentatorName>Social Adaptation Chip - Basic</augmentatorName>
+      <willpowerBonus>
+        <augmentatorName>Neural Boost - Basic</augmentatorName>
         <augmentatorValue>3</augmentatorValue>
-      </charismaBonus>
+      </willpowerBonus>
+      <memoryBonus>
+        <augmentatorName>Memory Augmentation - Basic</augmentatorName>
+        <augmentatorValue>3</augmentatorValue>
+      </memoryBonus>
       <perceptionBonus>
-        <augmentatorName>Halo Alpha</augmentatorName>
+        <augmentatorName>Ocular Filter - Basic</augmentatorName>
         <augmentatorValue>3</augmentatorValue>
       </perceptionBonus>
     </attributeEnhancers>
     <attributes>
-      <intelligence>7</intelligence>
-      <memory>7</memory>
-      <charisma>4</charisma>
-      <perception>4</perception>
+      <intelligence>27</intelligence>
+      <memory>21</memory>
+      <charisma>17</charisma>
+      <perception>17</perception>
       <willpower>17</willpower>
     </attributes>
-    <rowset name="skills" key="typeID" columns="typeID,skillpoints,level,unpublished">
-      <row typeID="12484" skillpoints="226275" level="4" />
-      <row typeID="24241" skillpoints="2829" level="2" />
-      <row typeID="23618" skillpoints="7072" level="2" />
-      <row typeID="3442" skillpoints="7072" level="2" />
-      <row typeID="12305" skillpoints="8000" level="3" />
-      <row typeID="23606" skillpoints="8000" level="3" />
-      <row typeID="3436" skillpoints="256000" level="5" />
-      <row typeID="3441" skillpoints="112357" level="3" />
-      <row typeID="3439" skillpoints="750" level="1" />
-      <row typeID="3437" skillpoints="1415" level="2" />
-      <row typeID="3426" skillpoints="1450" level="2" />
-      <row typeID="3432" skillpoints="500" level="1" />
-      <row typeID="3428" skillpoints="500" level="1" />
-      <row typeID="3431" skillpoints="1415" level="2" />
-      <row typeID="3551" skillpoints="8000" level="3" />
-      <row typeID="3429" skillpoints="8000" level="3" />
-      <row typeID="3423" skillpoints="500" level="1" />
-      <row typeID="3424" skillpoints="2829" level="2" />
-      <row typeID="3418" skillpoints="4243" level="2" />
-      <row typeID="3421" skillpoints="2829" level="2" />
-      <row typeID="3417" skillpoints="1415" level="2" />
-      <row typeID="3413" skillpoints="8000" level="3" />
-      <row typeID="3422" skillpoints="500" level="1" />
-      <row typeID="3419" skillpoints="4243" level="2" />
-      <row typeID="3416" skillpoints="1415" level="2" />
-      <row typeID="3425" skillpoints="500" level="1" />
-      <row typeID="3316" skillpoints="16000" level="3" />
-      <row typeID="3300" skillpoints="256000" level="5" />
-      <row typeID="3309" skillpoints="7072" level="2" />
-      <row typeID="3306" skillpoints="24000" level="3" />
-      <row typeID="3304" skillpoints="996" level="1" />
-      <row typeID="3312" skillpoints="16000" level="3" />
-      <row typeID="3310" skillpoints="16000" level="3" />
-      <row typeID="3311" skillpoints="16000" level="3" />
-      <row typeID="3303" skillpoints="256000" level="5" />
-      <row typeID="3301" skillpoints="8000" level="3" />
-      <row typeID="3315" skillpoints="5657" level="2" />
-      <row typeID="3317" skillpoints="7072" level="2" />
-      <row typeID="3318" skillpoints="2829" level="2" />
-      <row typeID="3386" skillpoints="312" level="1" />
-      <row typeID="3348" skillpoints="8000" level="3" />
-      <row typeID="3377" skillpoints="45255" level="4" />
-      <row typeID="12387" skillpoints="24000" level="3" />
-      <row typeID="12385" skillpoints="24000" level="3" />
-      <row typeID="3376" skillpoints="1415" level="2" />
-      <row typeID="3378" skillpoints="45255" level="4" />
-      <row typeID="3375" skillpoints="8000" level="3" />
-      <row typeID="3374" skillpoints="45255" level="4" />
-      <row typeID="3379" skillpoints="45255" level="4" />
-      <row typeID="3394" skillpoints="90510" level="4" />
-      <row typeID="26252" skillpoints="500" level="1" />
-      <row typeID="3392" skillpoints="8183" level="3" />
-      <row typeID="3393" skillpoints="45255" level="4" />
-      <row typeID="12441" skillpoints="500" level="1" />
-      <row typeID="3319" skillpoints="528" level="1" />
-      <row typeID="3452" skillpoints="5657" level="2" />
-      <row typeID="3450" skillpoints="1415" level="2" />
-      <row typeID="3453" skillpoints="16000" level="3" />
-      <row typeID="3451" skillpoints="2829" level="2" />
-      <row typeID="3449" skillpoints="8000" level="3" />
-      <row typeID="3455" skillpoints="1415" level="2" />
-      <row typeID="3411" skillpoints="24000" level="3" />
-      <row typeID="3402" skillpoints="8000" level="3" />
-      <row typeID="3359" skillpoints="24000" level="3" />
-      <row typeID="3357" skillpoints="1415" level="2" />
-      <row typeID="3356" skillpoints="2829" level="2" />
-      <row typeID="3355" skillpoints="8000" level="3" />
-      <row typeID="3339" skillpoints="2000" level="1" />
-      <row typeID="3335" skillpoints="226275" level="4" />
-      <row typeID="3331" skillpoints="90510" level="4" />
-      <row typeID="12099" skillpoints="8486" level="2" />
-      <row typeID="12097" skillpoints="500" level="1" />
-      <row typeID="3327" skillpoints="45255" level="4" />
-      <row typeID="25235" skillpoints="8000" level="3" />
-      <row typeID="3443" skillpoints="1415" level="2" />
+    <rowset name="skills" key="typeID" columns="typeID,skillpoints,level,published">
+      <row typeID="3300" skillpoints="1415" level="2" published="1" />
+      <row typeID="3301" skillpoints="8000" level="3" published="1" />
+      <row typeID="3327" skillpoints="8000" level="3" published="1" />
+      <row typeID="3330" skillpoints="2829" level="2" published="1" />
+      <row typeID="3386" skillpoints="256000" level="5" published="1" />
+      <row typeID="3392" skillpoints="1415" level="2" published="1" />
+      <row typeID="3402" skillpoints="45255" level="4" published="1" />
+      <row typeID="3412" skillpoints="750" level="1" published="1" />
+      <row typeID="3413" skillpoints="8000" level="3" published="1" />
+      <row typeID="3426" skillpoints="8000" level="3" published="1" />
+      <row typeID="3449" skillpoints="8000" level="3" published="1" />
+      <row typeID="3380" skillpoints="256000" level="5" published="1" />
+      <row typeID="3411" skillpoints="20534" level="2" published="1" />
+      <row typeID="32918" skillpoints="16000" level="3" published="1" />
+      <row typeID="3416" skillpoints="250" level="1" published="1" />
+      <row typeID="3394" skillpoints="500" level="1" published="1" />
+      <row typeID="3436" skillpoints="8000" level="3" published="1" />
+      <row typeID="22578" skillpoints="32000" level="3" published="1" />
+      <row typeID="3438" skillpoints="0" level="0" published="1" />
+      <row typeID="24241" skillpoints="250" level="1" published="1" />
+      <row typeID="3425" skillpoints="500" level="1" published="1" />
+      <row typeID="3429" skillpoints="250" level="1" published="1" />
+      <row typeID="3418" skillpoints="750" level="1" published="1" />
+      <row typeID="3417" skillpoints="250" level="1" published="1" />
+      <row typeID="3410" skillpoints="135765" level="4" published="1" />
+      <row typeID="17940" skillpoints="181020" level="4" published="1" />
     </rowset>
+    <rowset name="certificates" key="certificateID" columns="certificateID" />
+    <rowset name="corporationRoles" key="roleID" columns="roleID,roleName" />
+    <rowset name="corporationRolesAtHQ" key="roleID" columns="roleID,roleName" />
+    <rowset name="corporationRolesAtBase" key="roleID" columns="roleID,roleName" />
+    <rowset name="corporationRolesAtOther" key="roleID" columns="roleID,roleName" />
+    <rowset name="corporationTitles" key="titleID" columns="titleID,titleName" />
   </result>
-  <cachedUntil>2008-05-26 07:23:25</cachedUntil>
+  <cachedUntil>2014-06-28 12:15:18</cachedUntil>
 </eveapi>

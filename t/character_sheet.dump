@@ -1,312 +1,114 @@
 {
-          'cached_until' => '2008-05-26 07:23:25',
           'skills' => {
-                        '3455' => {
-                                  'level' => '2',
-                                  'skill_points' => '1415'
-                                },
-                        '3316' => {
-                                  'level' => '3',
-                                  'skill_points' => '16000'
-                                },
-                        '3339' => {
-                                  'level' => '1',
-                                  'skill_points' => '2000'
-                                },
-                        '3418' => {
-                                  'level' => '2',
-                                  'skill_points' => '4243'
-                                },
-                        '3303' => {
-                                  'level' => '5',
-                                  'skill_points' => '256000'
-                                },
-                        '3422' => {
-                                  'level' => '1',
-                                  'skill_points' => '500'
-                                },
-                        '12484' => {
-                                   'level' => '4',
-                                   'skill_points' => '226275'
-                                 },
-                        '3376' => {
-                                  'level' => '2',
-                                  'skill_points' => '1415'
-                                },
-                        '3374' => {
-                                  'level' => '4',
-                                  'skill_points' => '45255'
-                                },
-                        '3551' => {
-                                  'level' => '3',
-                                  'skill_points' => '8000'
-                                },
-                        '3453' => {
-                                  'level' => '3',
-                                  'skill_points' => '16000'
-                                },
-                        '26252' => {
-                                   'level' => '1',
-                                   'skill_points' => '500'
-                                 },
-                        '3306' => {
-                                  'level' => '3',
-                                  'skill_points' => '24000'
-                                },
-                        '3393' => {
-                                  'level' => '4',
-                                  'skill_points' => '45255'
-                                },
-                        '3419' => {
-                                  'level' => '2',
-                                  'skill_points' => '4243'
-                                },
-                        '3309' => {
-                                  'level' => '2',
-                                  'skill_points' => '7072'
-                                },
-                        '3312' => {
-                                  'level' => '3',
-                                  'skill_points' => '16000'
-                                },
-                        '12387' => {
+                        '22578' => {
                                    'level' => '3',
-                                   'skill_points' => '24000'
+                                   'skill_points' => '32000'
                                  },
-                        '3311' => {
-                                  'level' => '3',
-                                  'skill_points' => '16000'
-                                },
-                        '3301' => {
-                                  'level' => '3',
-                                  'skill_points' => '8000'
-                                },
-                        '3417' => {
+                        '3300' => {
                                   'level' => '2',
                                   'skill_points' => '1415'
-                                },
-                        '3443' => {
-                                  'level' => '2',
-                                  'skill_points' => '1415'
-                                },
-                        '3355' => {
-                                  'level' => '3',
-                                  'skill_points' => '8000'
-                                },
-                        '3392' => {
-                                  'level' => '3',
-                                  'skill_points' => '8183'
-                                },
-                        '3331' => {
-                                  'level' => '4',
-                                  'skill_points' => '90510'
-                                },
-                        '3310' => {
-                                  'level' => '3',
-                                  'skill_points' => '16000'
-                                },
-                        '3442' => {
-                                  'level' => '2',
-                                  'skill_points' => '7072'
-                                },
-                        '3416' => {
-                                  'level' => '2',
-                                  'skill_points' => '1415'
-                                },
-                        '3319' => {
-                                  'level' => '1',
-                                  'skill_points' => '528'
-                                },
-                        '3377' => {
-                                  'level' => '4',
-                                  'skill_points' => '45255'
-                                },
-                        '3378' => {
-                                  'level' => '4',
-                                  'skill_points' => '45255'
-                                },
-                        '3432' => {
-                                  'level' => '1',
-                                  'skill_points' => '500'
-                                },
-                        '3315' => {
-                                  'level' => '2',
-                                  'skill_points' => '5657'
-                                },
-                        '3356' => {
-                                  'level' => '2',
-                                  'skill_points' => '2829'
-                                },
-                        '3335' => {
-                                  'level' => '4',
-                                  'skill_points' => '226275'
-                                },
-                        '3348' => {
-                                  'level' => '3',
-                                  'skill_points' => '8000'
                                 },
                         '3413' => {
                                   'level' => '3',
                                   'skill_points' => '8000'
                                 },
-                        '3300' => {
+                        '3380' => {
                                   'level' => '5',
                                   'skill_points' => '256000'
                                 },
-                        '3431' => {
-                                  'level' => '2',
-                                  'skill_points' => '1415'
+                        '3410' => {
+                                  'level' => '4',
+                                  'skill_points' => '135765'
                                 },
-                        '3424' => {
-                                  'level' => '2',
-                                  'skill_points' => '2829'
+                        '3402' => {
+                                  'level' => '4',
+                                  'skill_points' => '45255'
                                 },
-                        '3411' => {
-                                  'level' => '3',
-                                  'skill_points' => '24000'
-                                },
-                        '3318' => {
-                                  'level' => '2',
-                                  'skill_points' => '2829'
-                                },
-                        '24241' => {
-                                   'level' => '2',
-                                   'skill_points' => '2829'
-                                 },
-                        '12385' => {
-                                   'level' => '3',
-                                   'skill_points' => '24000'
-                                 },
-                        '3450' => {
-                                  'level' => '2',
-                                  'skill_points' => '1415'
-                                },
-                        '3375' => {
+                        '3426' => {
                                   'level' => '3',
                                   'skill_points' => '8000'
                                 },
-                        '12099' => {
-                                   'level' => '2',
-                                   'skill_points' => '8486'
-                                 },
-                        '3317' => {
+                        '3411' => {
                                   'level' => '2',
-                                  'skill_points' => '7072'
+                                  'skill_points' => '20534'
                                 },
-                        '12097' => {
+                        '3418' => {
+                                  'level' => '1',
+                                  'skill_points' => '750'
+                                },
+                        '3301' => {
+                                  'level' => '3',
+                                  'skill_points' => '8000'
+                                },
+                        '3449' => {
+                                  'level' => '3',
+                                  'skill_points' => '8000'
+                                },
+                        '24241' => {
                                    'level' => '1',
-                                   'skill_points' => '500'
+                                   'skill_points' => '250'
+                                 },
+                        '3412' => {
+                                  'level' => '1',
+                                  'skill_points' => '750'
+                                },
+                        '32918' => {
+                                   'level' => '3',
+                                   'skill_points' => '16000'
+                                 },
+                        '3417' => {
+                                  'level' => '1',
+                                  'skill_points' => '250'
+                                },
+                        '3392' => {
+                                  'level' => '2',
+                                  'skill_points' => '1415'
+                                },
+                        '3327' => {
+                                  'level' => '3',
+                                  'skill_points' => '8000'
+                                },
+                        '3436' => {
+                                  'level' => '3',
+                                  'skill_points' => '8000'
+                                },
+                        '3416' => {
+                                  'level' => '1',
+                                  'skill_points' => '250'
+                                },
+                        '3438' => {
+                                  'level' => '0',
+                                  'skill_points' => '0'
+                                },
+                        '3386' => {
+                                  'level' => '5',
+                                  'skill_points' => '256000'
+                                },
+                        '3394' => {
+                                  'level' => '1',
+                                  'skill_points' => '500'
+                                },
+                        '3429' => {
+                                  'level' => '1',
+                                  'skill_points' => '250'
+                                },
+                        '17940' => {
+                                   'level' => '4',
+                                   'skill_points' => '181020'
                                  },
                         '3425' => {
                                   'level' => '1',
                                   'skill_points' => '500'
                                 },
-                        '3441' => {
-                                  'level' => '3',
-                                  'skill_points' => '112357'
-                                },
-                        '25235' => {
-                                   'level' => '3',
-                                   'skill_points' => '8000'
-                                 },
-                        '3439' => {
-                                  'level' => '1',
-                                  'skill_points' => '750'
-                                },
-                        '3379' => {
-                                  'level' => '4',
-                                  'skill_points' => '45255'
-                                },
-                        '3421' => {
+                        '3330' => {
                                   'level' => '2',
                                   'skill_points' => '2829'
-                                },
-                        '3426' => {
-                                  'level' => '2',
-                                  'skill_points' => '1450'
-                                },
-                        '3402' => {
-                                  'level' => '3',
-                                  'skill_points' => '8000'
-                                },
-                        '23606' => {
-                                   'level' => '3',
-                                   'skill_points' => '8000'
-                                 },
-                        '12305' => {
-                                   'level' => '3',
-                                   'skill_points' => '8000'
-                                 },
-                        '12441' => {
-                                   'level' => '1',
-                                   'skill_points' => '500'
-                                 },
-                        '3449' => {
-                                  'level' => '3',
-                                  'skill_points' => '8000'
-                                },
-                        '3437' => {
-                                  'level' => '2',
-                                  'skill_points' => '1415'
-                                },
-                        '23618' => {
-                                   'level' => '2',
-                                   'skill_points' => '7072'
-                                 },
-                        '3451' => {
-                                  'level' => '2',
-                                  'skill_points' => '2829'
-                                },
-                        '3304' => {
-                                  'level' => '1',
-                                  'skill_points' => '996'
-                                },
-                        '3452' => {
-                                  'level' => '2',
-                                  'skill_points' => '5657'
-                                },
-                        '3436' => {
-                                  'level' => '5',
-                                  'skill_points' => '256000'
-                                },
-                        '3423' => {
-                                  'level' => '1',
-                                  'skill_points' => '500'
-                                },
-                        '3327' => {
-                                  'level' => '4',
-                                  'skill_points' => '45255'
-                                },
-                        '3386' => {
-                                  'level' => '1',
-                                  'skill_points' => '312'
-                                },
-                        '3357' => {
-                                  'level' => '2',
-                                  'skill_points' => '1415'
-                                },
-                        '3359' => {
-                                  'level' => '3',
-                                  'skill_points' => '24000'
-                                },
-                        '3394' => {
-                                  'level' => '4',
-                                  'skill_points' => '90510'
-                                },
-                        '3429' => {
-                                  'level' => '3',
-                                  'skill_points' => '8000'
-                                },
-                        '3428' => {
-                                  'level' => '1',
-                                  'skill_points' => '500'
                                 }
                       },
-          'corporation_id' => '1044143901',
-          'name' => 'Ardent Dawn',
-          'blood_line' => 'Amarr',
-          'corporation_name' => 'Bellator Apparatus',
-          'balance' => '63651122.35',
+          'corporation_id' => '1000044',
+          'date_of_birth' => '2014-06-05 19:55:49',
+          'blood_line' => 'Civire',
+          'corporation_name' => 'School of Applied Knowledge',
           'attribute_enhancers' => {
                                      'memory' => {
                                                  'value' => '3',
@@ -316,25 +118,29 @@
                                                        'value' => '3',
                                                        'name' => 'Cybernetic Subprocessor - Basic'
                                                      },
-                                     'charisma' => {
-                                                   'value' => '3',
-                                                   'name' => 'Social Adaptation Chip - Basic'
-                                                 },
                                      'perception' => {
                                                      'value' => '3',
-                                                     'name' => 'Halo Alpha'
+                                                     'name' => 'Ocular Filter - Basic'
                                                    },
                                      'willpower' => {
                                                     'value' => '3',
                                                     'name' => 'Neural Boost - Basic'
                                                   }
                                    },
-          'race' => 'Amarr',
+          'race' => 'Caldari',
+          'gender' => 'Female',
+          'cached_until' => '2014-06-28 12:15:18',
+          'name' => 'Milolika Muvila',
+          'clone_skill_points' => '2800000',
+          'character_id' => '94701913',
+          'ancestry' => 'Entrepreneurs',
+          'balance' => '21418322.39',
           'attributes' => {
-                            'memory' => '7',
-                            'intelligence' => '7',
-                            'perception' => '4',
-                            'charisma' => '4',
+                            'memory' => '21',
+                            'intelligence' => '27',
+                            'perception' => '17',
+                            'charisma' => '17',
                             'willpower' => '17'
-                          }
-        };
+                          },
+          'clone_name' => 'Clone Grade Delta'
+}

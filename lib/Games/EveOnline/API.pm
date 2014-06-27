@@ -341,17 +341,27 @@ sub character_sheet {
         $enhancer->{name}  = $enhancer_rows->{$attribute}->{augmentatorName};
         $enhancer->{value} = $enhancer_rows->{$attribute}->{augmentatorValue};
     }
-
-    $sheet->{blood_line}       = $result->{bloodLine};
-    $sheet->{name}             = $result->{name};
-    $sheet->{corporation_id}   = $result->{corporationID};
-    $sheet->{corporation_name} = $result->{corporationName};
-    $sheet->{balance}          = $result->{balance};
-    $sheet->{race}             = $result->{race};
-    $sheet->{attributes}       = $result->{attributes};
+    
+    $sheet = {
+        character_id        => $result->{characterID},
+        date_of_birth       => $result->{DoB},
+        ancestry            => $result->{ancestry},
+        gender              => $result->{gender},
+        clone_name          => $result->{cloneName},
+        blood_line          => $result->{bloodLine},
+        name                => $result->{name},
+        corporation_id      => $result->{corporationID},
+        corporation_name    => $result->{corporationName},
+        balance             => $result->{balance},
+        race                => $result->{race},
+        attributes          => $result->{attributes},
+        clone_skill_points  => $result->{cloneSkillPoints},
+        attribute_enhancers => $enhancers,
+        cached_until        => $data->{cachedUntil},
+    };
 
     my $skills     = $sheet->{skills} = {};
-    my $skill_rows = $result->{rowset}->{row};
+    my $skill_rows = $result->{rowset}->{skills}->{row};
     foreach my $skill_id (keys %$skill_rows) {
         my $skill = $skills->{$skill_id} = {};
 
@@ -359,7 +369,9 @@ sub character_sheet {
         $skill->{skill_points} = $skill_rows->{$skill_id}->{skillpoints};
     }
 
-    $sheet->{cached_until} = $data->{cachedUntil};
+    # TODO: Add logic to parse next rowsets:
+    # certificates, corporationRoles, corporationRolesAtHQ, 
+    # corporationRolesAtBase, corporationRolesAtOther, corporationTitles
 
     return $sheet;
 }
