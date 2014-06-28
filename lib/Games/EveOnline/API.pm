@@ -534,7 +534,7 @@ sub account_status {
         create_date   => $result->{createDate},
         logon_count   => $result->{logonCount},
         logon_minutes => $result->{logonMinutes},
-        cachedUntil   => $data->{cachedUntil},
+        cached_until   => $data->{cachedUntil},
     }
 }
 
