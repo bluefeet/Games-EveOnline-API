@@ -2,6 +2,9 @@ Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
 
+0.08      2014-07-09
+ - add wallet_journal and wallet_transactions functions (chipsoid)
+
 0.07      2014-06-28
  - fix character_sheet function and test for it (chipsoid)
 

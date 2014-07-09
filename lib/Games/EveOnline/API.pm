@@ -687,7 +687,7 @@ sub asset_list {
 
 =head2 contact_list
 
-  my $contact_list = $eapi->contact_list();
+  my $contact_list = $eapi->contact_list( character_id  => $character_id );
 
 Returns a hashref with the following structure:
 
@@ -755,6 +755,192 @@ sub contact_list {
     return $contacts;
 }
 
+=head2 wallet_transactions
+
+  my $wallet_transactions = $eapi->wallet_transactions( 
+        character_id  => $character_id, 
+        row_count     => $row_count,      # optional, default is 2560
+        account_key   => $account_key,    # optional, default is 1000
+        from_id       => $args{from_id},  # optional, need for offset
+      );
+
+Returns a hashref with the following structure:
+
+  {
+    '3499165305' => {
+      'type_name' => 'Mining Frigate',
+      'quantity' => '1',
+      'client_id' => '90646537',
+      'transaction_date_time' => '2014-06-28 12:23:41',
+      'station_id' => '60015001',
+      'transaction_id' => '3499165305',
+      'transaction_for' => 'personal',
+      'type_id' => '32918',
+      'station_name' => 'Akiainavas III - School of Applied Knowledge',
+      'client_name' => 'Zeta Zhang',
+      'price' => '1201.02',
+      'transaction_type' => 'sell'
+    },
+    '3482136396' => {
+      'type_name' => 'Mining Barge',
+      'quantity' => '1',
+      'client_id' => '1000167',
+      'transaction_date_time' => '2014-06-15 20:15:26',
+      'station_id' => '60014680',
+      'transaction_id' => '3482136396',
+      'transaction_for' => 'personal',
+      'type_id' => '17940',
+      'station_name' => 'Autama V - Moon 9 - State War Academy',
+      'client_name' => 'State War Academy',
+      'price' => '500000.00',
+      'transaction_type' => 'buy'
+    }
+  }
+
+=cut
+
+sub wallet_transactions {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $row_count   = $args{row_count}   || 2560;
+    my $account_key = $args{account_key} || 1000;
+
+
+    my $data = $self->_load_xml(
+        path          => 'char/WalletTransactions.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+        row_count     => $row_count,
+        account_key   => $account_key,
+        from_id       => $args{from_id},
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return() unless $data->{result}->{rowset}->{row};
+
+    my $trans;
+    foreach my $t_id ( keys %$result ) {
+        $trans->{$t_id} = {
+            transaction_for       => $result->{$t_id}->{transactionFor},
+            transaction_type      => $result->{$t_id}->{transactionType},
+            station_name          => $result->{$t_id}->{stationName},
+            station_id            => $result->{$t_id}->{stationID},
+            client_name           => $result->{$t_id}->{clientName},
+            client_id             => $result->{$t_id}->{clientID},
+            price                 => $result->{$t_id}->{price},
+            type_id               => $result->{$t_id}->{typeID},
+            type_name             => $result->{$t_id}->{typeName},
+            quantity              => $result->{$t_id}->{quantity},
+            transaction_id        => $t_id,
+            transaction_date_time => $result->{$t_id}->{transactionDateTime},
+        };
+    }
+
+    $trans->{cached_until} = $data->{cachedUntil};
+
+    return $trans;
+}
+
+=head2 wallet_journal
+
+  my $wallet_journal = $eapi->wallet_journal( 
+        character_id  => $character_id, 
+        row_count     => $row_count,      # optional, default is 2560
+        account_key   => $account_key,    # optional, default is 1000
+        from_id       => $args{from_id},  # optional, need for offset
+      );
+
+Returns a hashref with the following structure:
+
+  {
+    '9729070529' => {
+                'owner_name2' => 'Milolika Muvila',
+                'arg_id1' => '0',
+                'date' => '2014-07-08 19:02:53',
+                'reason' => '',
+                'tax_receiver_id' => '',
+                'owner_name1' => 'Cyno Chain',
+                'amount' => '814900000.00',
+                'owner_id1' => '93496706',
+                'tax_amount' => '',
+                'balance' => '826371087.94',
+                'arg_name1' => '3513456219',
+                'ref_id' => '9729070529',
+                'ref_type_id' => '2',
+                'owner_id2' => '94701913'
+              },
+    '9729071394' => {
+                'owner_name2' => '',
+                'arg_id1' => '0',
+                'date' => '2014-07-08 19:03:04',
+                'reason' => '',
+                'tax_receiver_id' => '',
+                'owner_name1' => 'Milolika Muvila',
+                'amount' => '-28369982.50',
+                'owner_id1' => '94701913',
+                'tax_amount' => '',
+                'balance' => '785777605.44',
+                'arg_name1' => '',
+                'ref_id' => '9729071394',
+                'ref_type_id' => '42',
+                'owner_id2' => '0'
+              }
+  }
+
+=cut
+
+sub wallet_journal {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $row_count   = $args{row_count}   || 2560;
+    my $account_key = $args{account_key} || 1000;
+
+
+    my $data = $self->_load_xml(
+        path          => 'char/WalletJournal.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+        row_count     => $row_count,
+        account_key   => $account_key,
+        from_id       => $args{from_id},
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return() unless $data->{result}->{rowset}->{row};
+
+    my $journal;
+    foreach my $r_id ( keys %$result ) {
+        $journal->{$r_id} = {
+            ref_id          => $r_id,
+            date            => $result->{$r_id}->{date},
+            ref_type_id     => $result->{$r_id}->{refTypeID},
+            owner_name1     => $result->{$r_id}->{ownerName1},
+            owner_id1       => $result->{$r_id}->{ownerID1},
+            owner_name2     => $result->{$r_id}->{ownerName2},
+            owner_id2       => $result->{$r_id}->{ownerID2},
+            arg_name1       => $result->{$r_id}->{argName1},
+            arg_id1         => $result->{$r_id}->{argID1},
+            amount          => $result->{$r_id}->{amount},
+            balance         => $result->{$r_id}->{balance},
+            reason          => $result->{$r_id}->{reason},
+            tax_amount      => $result->{$r_id}->{taxAmount},
+            tax_receiver_id => $result->{$r_id}->{taxReceiverID},
+        };
+    }
+
+    $journal->{cached_until} = $data->{cachedUntil};
+
+    return $journal;
+}
+
 # convert keys
 sub _parse_assets {
     my ($self, $xml) = @_;
@@ -807,6 +993,15 @@ sub _retrieve_xml {
     if ($args{character_id}) {
         $params->{characterID} = $args{character_id};
     }
+    if ($args{row_count}) {
+        $params->{rowCount}    = $args{row_count};
+    }
+    if ($args{account_key}) {
+        $params->{accountKey}  = $args{account_key};
+    }
+    if ($args{from_id}) {
+        $params->{fromID}      = $args{from_id};
+    }
 
     my $uri = URI->new( $self->api_url() . '/' . $args{path} );
     $uri->query_form( $params );
@@ -822,7 +1017,7 @@ sub _parse_xml {
     my $data = XML::Simple::XMLin(
         $xml,
         ForceArray => ['row'],
-        KeyAttr    => ['characterID', 'itemID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
+        KeyAttr    => ['characterID', 'transactionID', 'refID', 'itemID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
     );
 
     return $data;

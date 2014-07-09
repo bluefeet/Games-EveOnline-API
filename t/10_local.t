@@ -43,6 +43,8 @@ my $feeds = [qw(
     character_info
     asset_list
     contact_list
+    wallet_transactions
+    wallet_journal
 )];
 
 foreach my $feed (@$feeds) {
