@@ -1053,7 +1053,6 @@ sub mail_bodies {
     return $bodies;
 }
 
-
 =head2 mail_lists
 
   my $mail_lists = $eapi->mail_lists( character_id  => $character_id );
@@ -1091,6 +1090,44 @@ sub mail_lists {
     $lists->{cached_until} = $data->{cachedUntil};
   
     return $lists;
+}
+
+=head2 character_name
+
+  my $character_name = $eapi->character_name( ids => '90922771,94701913' );
+
+Returns a hashref with the following structure:
+
+{
+  '94701913' => 'Milolika Muvila',
+  'cached_until' => '2014-08-10 20:59:55',
+  '90922771' => 'Chips Merkaba'
+}
+
+=cut
+
+sub character_name {
+    my ($self, %args) = @_;
+
+    croak('No comma separated character ids specified') unless $args{ids};
+
+    my $data = $self->_load_xml(
+        path => 'eve/CharacterName.xml.aspx',
+        ids  => $args{ids},
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return() unless $data->{result}->{rowset}->{row};
+
+    my $names;
+    foreach my $char_id ( keys %$result ) {
+        $names->{$char_id} = $result->{$char_id}->{name};
+    }
+
+    $names->{cached_until} = $data->{cachedUntil};
+  
+    return $names;
 }
 
 # convert keys
