@@ -2,6 +2,9 @@ Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
 
+0.09      2014-07-10
+ - add functions for eve-mails (chipsoid)
+
 0.08      2014-07-09
  - add wallet_journal and wallet_transactions functions (chipsoid)
 

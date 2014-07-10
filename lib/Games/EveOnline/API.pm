@@ -941,6 +941,158 @@ sub wallet_journal {
     return $journal;
 }
 
+=head2 mail_messages
+
+  my $mail_messages = $eapi->mail_messages( character_id  => $character_id );
+
+Returns a hashref with the following structure:
+
+{
+  '331477595' => {
+                 'to_list_id' => '145156607',
+                 'message_id' => '331477595',
+                 'to_character_ids' => '',
+                 'sender_id' => '91669871',
+                 'sent_date' => '2013-10-08 06:30:00',
+                 'to_corp_or_alliance_id' => '',
+                 'title' => "\x{420}\x{430}\x{441}\x{43f}\x{440}\x{43e}\x{434}\x{430}\x{436}\x{430}",
+                 'sender_name' => 'Valerii Ostudnev'
+               },
+  '336393982' => {
+                 'to_list_id' => '',
+                 'message_id' => '336393982',
+                 'to_character_ids' => '1203082547',
+                 'sender_id' => '90922771',
+                 'sent_date' => '2014-03-02 13:30:00',
+                 'to_corp_or_alliance_id' => '',
+                 'title' => 'TSG -&gt; Z-H',
+                 'sender_name' => 'Chips Merkaba'
+               },
+  'cached_until' => '2014-07-10 18:33:59'
+}
+
+=cut
+
+sub mail_messages {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $data = $self->_load_xml(
+        path          => 'char/MailMessages.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return() unless $data->{result}->{rowset}->{row};
+
+    my $messages;
+  
+    foreach my $mes_id ( keys %$result ) {
+        $messages->{$mes_id} = {
+            message_id              => $mes_id,
+            sender_id               => $result->{$mes_id}->{senderID},
+            sender_name             => $result->{$mes_id}->{senderName},
+            sent_date               => $result->{$mes_id}->{sentDate},
+            title                   => $result->{$mes_id}->{title},
+            to_corp_or_alliance_id  => $result->{$mes_id}->{toCorpOrAllianceID},
+            to_character_ids        => $result->{$mes_id}->{toCharacterIDs},
+            to_list_id              => $result->{$mes_id}->{toListID},
+        };
+    }
+    $messages->{cached_until} = $data->{cachedUntil};
+
+    return $messages;
+}
+
+=head2 mail_bodies
+
+  my $mail_bodies = $eapi->mail_bodies( character_id  => $character_id, ids => $ids );
+
+Returns a hashref with the following structure:
+
+
+{
+  'cached_until' => '2024-07-07 18:13:16',
+  'missing_message_ids' => '331477591',
+  '331477595' => "<font size="12" color="#bfffffff"></font><font size="12" color="#fff7931e"><a href="contract:30004977//73497683">[Multiple Items]</a></font><font size="12" color="#bfffffff"> x{428}x{438}x{43b}x{434}x{43e}x{432}x{44b}x{439} x{43c}x{43e}x{430} 30x{43a}x{43a}<br></font><font size="12" color="#fff7931e"><a href="contract:30004977//73497661">[Multiple Items]</a></font><font size="12" color="#bfffffff"> x{410}x{440}x{442}x{438}-x{421}x{411} x{413}x{43d}x{43e}x{437}x{438}x{441} 80x{43a}x{43a}<br></font><font size="12" color="#fff7931e"><a href="contract:30004977//73497644">[Multiple Items]</a></font><font size="12" color="#bfffffff"> x{410}x{440}x{43c}x{43e}x{440}x{43d}x{44b}x{439} x{431}x{440}x{443}x{442}x{438}x{43a}x{441} 60x{43a}x{43a}</font>"
+}
+
+=cut
+
+sub mail_bodies {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+    croak('No comma separated messages ids specified') unless $args{ids};
+
+    my $data = $self->_load_xml(
+        path          => 'char/MailBodies.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+        ids           => $args{ids},
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return() unless $data->{result}->{rowset}->{row};
+
+    my $bodies;
+    
+    foreach my $mes_id ( keys %$result ) {
+        $bodies->{$mes_id} = $result->{$mes_id}->{content};
+    }
+
+    $bodies->{cached_until}        = $data->{cachedUntil};
+    $bodies->{missing_message_ids} = $data->{result}->{missingMessageIDs};
+
+    return $bodies;
+}
+
+
+=head2 mail_lists
+
+  my $mail_lists = $eapi->mail_lists( character_id  => $character_id );
+
+Returns a hashref with the following structure:
+
+{
+    'cached_until' => '2014-07-11 00:06:57',
+    '145156367' => 'RAISA Shield Fits'
+}
+
+=cut
+
+sub mail_lists {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $data = $self->_load_xml(
+        path          => 'char/mailinglists.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return() unless $data->{result}->{rowset}->{row};
+
+    my $lists;
+    foreach my $list_id ( keys %$result ) {
+        $lists->{$list_id} = $result->{$list_id}->{displayName};
+    }
+
+    $lists->{cached_until} = $data->{cachedUntil};
+  
+    return $lists;
+}
+
 # convert keys
 sub _parse_assets {
     my ($self, $xml) = @_;
@@ -1002,6 +1154,9 @@ sub _retrieve_xml {
     if ($args{from_id}) {
         $params->{fromID}      = $args{from_id};
     }
+    if ($args{ids}) {
+        $params->{ids}         = $args{ids};
+    }
 
     my $uri = URI->new( $self->api_url() . '/' . $args{path} );
     $uri->query_form( $params );
@@ -1017,7 +1172,7 @@ sub _parse_xml {
     my $data = XML::Simple::XMLin(
         $xml,
         ForceArray => ['row'],
-        KeyAttr    => ['characterID', 'transactionID', 'refID', 'itemID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
+        KeyAttr    => ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
     );
 
     return $data;

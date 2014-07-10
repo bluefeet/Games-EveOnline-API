@@ -45,10 +45,17 @@ my $feeds = [qw(
     contact_list
     wallet_transactions
     wallet_journal
+    mail_lists
+    mail_bodies
+    mail_messages
 )];
 
+my $args = {
+    'mail_bodies' => { ids => '331477595,331477591' },
+};
+
 foreach my $feed (@$feeds) {
-    my $api_data = $api->$feed();
+    my $api_data = $api->$feed( %{ $args->{$feed} } );
 
     my $file = "t/$feed.dump";
     die "Cannot find $file" if !-f $file;
