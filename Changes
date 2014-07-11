@@ -2,6 +2,10 @@ Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
 
+0.11      2014-07-13
+ -  replace LWP::Simple to LWP::UserAgent cause first module can't return content if response code not equal 200 (chipsoid)
+ -  add error code structure in answer to all functions (chipsoid)
+
 0.10      2014-07-10
  - add character_name function (chipsoid)
 

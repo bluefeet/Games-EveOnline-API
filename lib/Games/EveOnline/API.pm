@@ -47,7 +47,7 @@ provider.  If you over-use the API I'm sure you'll eventually get blocked.
 use Types::Standard qw( Int Str );
 
 use URI;
-use LWP::Simple qw();
+use LWP::UserAgent qw();
 use XML::Simple qw();
 use Carp qw( croak );
 
@@ -124,6 +124,8 @@ sub skill_tree {
 
     my $result = {};
 
+    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
+
     my $group_rows = $data->{result}->{rowset}->{row};
     foreach my $group_id (keys %$group_rows) {
         my $group_result = $result->{$group_id} ||= {};
@@ -176,6 +178,8 @@ sub ref_types {
         path => 'eve/RefTypes.xml.aspx',
     );
 
+    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
+
     my $ref_types = {};
 
     my $rows = $data->{result}->{rowset}->{row};
@@ -209,6 +213,8 @@ sub sovereignty {
     my $data = $self->_load_xml(
         path => 'map/Sovereignty.xml.aspx',
     );
+
+    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
 
     my $systems = {};
 
@@ -258,6 +264,8 @@ sub characters {
         path          => 'account/Characters.xml.aspx',
         requires_auth => 1,
     );
+
+    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
 
     my $characters = {};
     my $rows = $data->{result}->{rowset}->{row};
@@ -329,6 +337,9 @@ sub character_sheet {
         requires_auth => 1,
         character_id  => $character_id,
     );
+
+    return $self->_get_error( $data ) unless $data->{result};
+
     my $result = $data->{result};
 
     my $sheet         = {};
@@ -410,7 +421,7 @@ sub skill_in_training {
     );
     my $result = $data->{result};
 
-    return()  unless $result->{skillInTraining};
+    return $self->_get_error( $data ) unless $result->{skillInTraining};
 
     my $training = {
         current_tq_time => $result->{currentTQTime},
@@ -472,7 +483,7 @@ sub api_key_info {
 
     my $result = $data->{result}->{key};
 
-    return() unless $result->{type};
+    return $self->_get_error( $data ) unless $result->{type};
 
     my $key_info = {
         type    => $result->{type},
@@ -527,7 +538,7 @@ sub account_status {
 
     my $result = $data->{result};
 
-    return() unless $result->{createDate};
+    return $self->_get_error( $data ) unless $result->{createDate};
 
     return {
         paid_until    => $result->{paidUntil},
@@ -593,7 +604,7 @@ sub character_info {
 
     my $result = $data->{result};
 
-    return() unless $result->{characterID};
+    return $self->_get_error( $data ) unless $result->{characterID};
 
     my $info = {
         character_id        => $result->{characterID},
@@ -680,7 +691,7 @@ sub asset_list {
 
     my $result = $data->{result};
 
-    return() unless $result->{rowset}->{row};
+    return $self->_get_error( $data ) unless $result->{rowset}->{row};
 
     return $self->_parse_assets( $result );
 }
@@ -733,7 +744,7 @@ sub contact_list {
 
     my $result = $data->{result};
 
-    return() unless $result->{rowset};
+    return $self->_get_error( $data ) unless $result->{rowset};
 
     my $contacts;
     foreach my $rows ( keys %{$result->{rowset}} ) {
@@ -820,7 +831,7 @@ sub wallet_transactions {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return() unless $data->{result}->{rowset}->{row};
+    return $self->_get_error( $data ) unless $result;
 
     my $trans;
     foreach my $t_id ( keys %$result ) {
@@ -914,7 +925,7 @@ sub wallet_journal {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return() unless $data->{result}->{rowset}->{row};
+    return $self->_get_error( $data ) unless $result;
 
     my $journal;
     foreach my $r_id ( keys %$result ) {
@@ -987,7 +998,7 @@ sub mail_messages {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return() unless $data->{result}->{rowset}->{row};
+    return $self->_get_error( $data ) unless $result;
 
     my $messages;
   
@@ -1039,7 +1050,7 @@ sub mail_bodies {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return() unless $data->{result}->{rowset}->{row};
+    return $self->_get_error( $data ) unless $result;
 
     my $bodies;
     
@@ -1080,7 +1091,7 @@ sub mail_lists {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return() unless $data->{result}->{rowset}->{row};
+    return $self->_get_error( $data ) unless $result;
 
     my $lists;
     foreach my $list_id ( keys %$result ) {
@@ -1118,7 +1129,7 @@ sub character_name {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return() unless $data->{result}->{rowset}->{row};
+    return $self->_get_error( $data ) unless $result;
 
     my $names;
     foreach my $char_id ( keys %$result ) {
@@ -1128,6 +1139,15 @@ sub character_name {
     $names->{cached_until} = $data->{cachedUntil};
   
     return $names;
+}
+
+# Generate error answer
+sub _get_error {
+    my ($self, $data) = @_;
+
+    return {
+        error => $data->{error} || { code => 500, content => 'Unknown error' },
+    };
 }
 
 # convert keys
@@ -1198,9 +1218,10 @@ sub _retrieve_xml {
     my $uri = URI->new( $self->api_url() . '/' . $args{path} );
     $uri->query_form( $params );
 
-    my $xml = LWP::Simple::get( $uri->as_string() );
+    my $ua = LWP::UserAgent->new;
+    my $xml = $ua->get( $uri->as_string() );
 
-    return $xml;
+    return $xml->content;
 }
 
 sub _parse_xml {
