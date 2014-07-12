@@ -1,0 +1,32 @@
+{
+          'contact_list' => {
+                            '962693552' => {
+                                           'standing' => '10',
+                                           'contact_name' => 'Pyuthon',
+                                           'contact_id' => '962693552',
+                                           'in_watchlist' => undef,
+                                           'contact_type_id' => '1384'
+                                         },
+                            '3019494' => {
+                                         'standing' => '0',
+                                         'contact_name' => 'Aura Todaki',
+                                         'contact_id' => '3019494',
+                                         'in_watchlist' => undef,
+                                         'contact_type_id' => '1375'
+                                       },
+                            '1879838281' => {
+                                            'standing' => '10',
+                                            'contact_name' => 'libzar',
+                                            'contact_id' => '1879838281',
+                                            'in_watchlist' => undef,
+                                            'contact_type_id' => '1378'
+                                          },
+                            '3018938' => {
+                                         'standing' => '0',
+                                         'contact_name' => 'Abishi Tian',
+                                         'contact_id' => '3018938',
+                                         'in_watchlist' => undef,
+                                         'contact_type_id' => '1383'
+                                       }
+                          }
+        }

@@ -38,10 +38,26 @@ my $feeds = [qw(
     characters
     character_sheet
     skill_in_training
+    api_key_info
+    account_status
+    character_info
+    asset_list
+    contact_list
+    wallet_transactions
+    wallet_journal
+    mail_lists
+    mail_bodies
+    mail_messages
+    character_name
 )];
 
+my $args = {
+    'mail_bodies'    => { ids => '331477595,331477591' },
+    'character_name' => { ids => '90922771,94701913' },
+};
+
 foreach my $feed (@$feeds) {
-    my $api_data = $api->$feed();
+    my $api_data = $api->$feed( %{ $args->{$feed} } );
 
     my $file = "t/$feed.dump";
     die "Cannot find $file" if !-f $file;

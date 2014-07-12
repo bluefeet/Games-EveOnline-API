@@ -47,7 +47,7 @@ provider.  If you over-use the API I'm sure you'll eventually get blocked.
 use Types::Standard qw( Int Str );
 
 use URI;
-use LWP::Simple qw();
+use LWP::UserAgent qw();
 use XML::Simple qw();
 use Carp qw( croak );
 
@@ -124,6 +124,8 @@ sub skill_tree {
 
     my $result = {};
 
+    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
+
     my $group_rows = $data->{result}->{rowset}->{row};
     foreach my $group_id (keys %$group_rows) {
         my $group_result = $result->{$group_id} ||= {};
@@ -133,10 +135,10 @@ sub skill_tree {
         my $skill_rows = $group_rows->{$group_id}->{rowset}->{row};
         foreach my $skill_id (keys %$skill_rows) {
             my $skill_result = $group_result->{skills}->{$skill_id} ||= {};
-            $skill_result->{name} = $skill_rows->{$skill_id}->{typeName};
-            $skill_result->{description} = $skill_rows->{$skill_id}->{description};
-            $skill_result->{rank} = $skill_rows->{$skill_id}->{rank};
-            $skill_result->{primary_attribute} = $skill_rows->{$skill_id}->{requiredAttributes}->{primaryAttribute};
+            $skill_result->{name}                = $skill_rows->{$skill_id}->{typeName};
+            $skill_result->{description}         = $skill_rows->{$skill_id}->{description};
+            $skill_result->{rank}                = $skill_rows->{$skill_id}->{rank};
+            $skill_result->{primary_attribute}   = $skill_rows->{$skill_id}->{requiredAttributes}->{primaryAttribute};
             $skill_result->{secondary_attribute} = $skill_rows->{$skill_id}->{requiredAttributes}->{secondaryAttribute};
 
             $skill_result->{bonuses} = {};
@@ -176,6 +178,8 @@ sub ref_types {
         path => 'eve/RefTypes.xml.aspx',
     );
 
+    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
+
     my $ref_types = {};
 
     my $rows = $data->{result}->{rowset}->{row};
@@ -210,16 +214,18 @@ sub sovereignty {
         path => 'map/Sovereignty.xml.aspx',
     );
 
+    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
+
     my $systems = {};
 
     my $rows = $data->{result}->{rowset}->{row};
     foreach my $system_id (keys %$rows) {
         my $system = $systems->{$system_id} = {};
-        $system->{name} = $rows->{$system_id}->{solarSystemName};
-        $system->{faction_id} = $rows->{$system_id}->{factionID};
-        $system->{sovereignty_level} = $rows->{$system_id}->{sovereigntyLevel};
+        $system->{name}                      = $rows->{$system_id}->{solarSystemName};
+        $system->{faction_id}                = $rows->{$system_id}->{factionID};
+        $system->{sovereignty_level}         = $rows->{$system_id}->{sovereigntyLevel};
         $system->{constellation_sovereignty} = $rows->{$system_id}->{constellationSovereignty};
-        $system->{alliance_id} = $rows->{$system_id}->{allianceID};
+        $system->{alliance_id}               = $rows->{$system_id}->{allianceID};
     }
 
     $systems->{cached_until} = $data->{cachedUntil};
@@ -258,6 +264,8 @@ sub characters {
         path          => 'account/Characters.xml.aspx',
         requires_auth => 1,
     );
+
+    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
 
     my $characters = {};
     my $rows = $data->{result}->{rowset}->{row};
@@ -322,13 +330,16 @@ sub character_sheet {
     my ($self, %args) = @_;
 
     my $character_id = $args{character_id} || $self->character_id();
-    croak('No character_id specified') if !$character_id;
+    croak('No character_id specified') unless $character_id;
 
     my $data = $self->_load_xml(
         path          => 'char/CharacterSheet.xml.aspx',
         requires_auth => 1,
         character_id  => $character_id,
     );
+
+    return $self->_get_error( $data ) unless $data->{result};
+
     my $result = $data->{result};
 
     my $sheet         = {};
@@ -341,17 +352,27 @@ sub character_sheet {
         $enhancer->{name}  = $enhancer_rows->{$attribute}->{augmentatorName};
         $enhancer->{value} = $enhancer_rows->{$attribute}->{augmentatorValue};
     }
-
-    $sheet->{blood_line}       = $result->{bloodLine};
-    $sheet->{name}             = $result->{name};
-    $sheet->{corporation_id}   = $result->{corporationID};
-    $sheet->{corporation_name} = $result->{corporationName};
-    $sheet->{balance}          = $result->{balance};
-    $sheet->{race}             = $result->{race};
-    $sheet->{attributes}       = $result->{attributes};
+    
+    $sheet = {
+        character_id        => $result->{characterID},
+        date_of_birth       => $result->{DoB},
+        ancestry            => $result->{ancestry},
+        gender              => $result->{gender},
+        clone_name          => $result->{cloneName},
+        blood_line          => $result->{bloodLine},
+        name                => $result->{name},
+        corporation_id      => $result->{corporationID},
+        corporation_name    => $result->{corporationName},
+        balance             => $result->{balance},
+        race                => $result->{race},
+        attributes          => $result->{attributes},
+        clone_skill_points  => $result->{cloneSkillPoints},
+        attribute_enhancers => $enhancers,
+        cached_until        => $data->{cachedUntil},
+    };
 
     my $skills     = $sheet->{skills} = {};
-    my $skill_rows = $result->{rowset}->{row};
+    my $skill_rows = $result->{rowset}->{skills}->{row};
     foreach my $skill_id (keys %$skill_rows) {
         my $skill = $skills->{$skill_id} = {};
 
@@ -359,7 +380,9 @@ sub character_sheet {
         $skill->{skill_points} = $skill_rows->{$skill_id}->{skillpoints};
     }
 
-    $sheet->{cached_until} = $data->{cachedUntil};
+    # TODO: Add logic to parse next rowsets:
+    # certificates, corporationRoles, corporationRolesAtHQ, 
+    # corporationRolesAtBase, corporationRolesAtOther, corporationTitles
 
     return $sheet;
 }
@@ -389,7 +412,7 @@ sub skill_in_training {
     my ($self, %args) = @_;
 
     my $character_id = $args{character_id} || $self->character_id();
-    croak('No character_id specified') if !$character_id;
+    croak('No character_id specified') unless $character_id;
 
     my $data = $self->_load_xml(
         path          => 'char/SkillInTraining.xml.aspx',
@@ -398,21 +421,759 @@ sub skill_in_training {
     );
     my $result = $data->{result};
 
-    return() if (!$result->{skillInTraining});
+    return $self->_get_error( $data ) unless $result->{skillInTraining};
 
     my $training = {
         current_tq_time => $result->{currentTQTime},
-        skill_id => $result->{trainingTypeID},
-        to_level => $result->{trainingToLevel},
-        start_time => $result->{trainingStartTime},
-        end_time => $result->{trainingEndTime},
-        start_sp => $result->{trainingStartSP},
-        end_sp => $result->{trainingDestinationSP},
+        skill_id        => $result->{trainingTypeID},
+        to_level        => $result->{trainingToLevel},
+        start_time      => $result->{trainingStartTime},
+        end_time        => $result->{trainingEndTime},
+        start_sp        => $result->{trainingStartSP},
+        end_sp          => $result->{trainingDestinationSP},
     };
 
     $training->{cached_until} = $data->{cachedUntil};
 
     return $training;
+}
+
+=head2 api_key_info
+
+  my $api_info = $eapi->api_key_info();
+
+Returns a hashref with the following structure:
+
+  {
+    'cached_until' => '2014-06-26 16:57:40',
+    'type' => 'Account',
+    'access_mask' => '268435455',
+    'characters' => {
+      '12345678' => {
+        'faction_id' => '0',
+        'character_name' => 'Char Name',
+        'corporation_name' => 'School of Applied Knowledge',
+        'faction_name' => '',
+        'alliance_id' => '0',
+        'corporation_id' => '1000044',
+        'alliance_name' => ''
+      },
+      '87654321' => {
+        'faction_id' => '0',
+        'character_name' => 'Char Name2',
+        'corporation_name' => 'Corp Name',
+        'faction_name' => '',
+        'alliance_id' => '1234567890',
+        'corporation_id' => '987654321',
+        'alliance_name' => 'Alliance Name'
+      }
+    },
+    'expires' => ''
+  }
+
+=cut
+
+sub api_key_info {
+    my ($self) = @_;
+
+    my $data = $self->_load_xml(
+        path                  => 'account/ApiKeyInfo.xml.aspx',
+        requires_auth         => 1,
+    );
+
+    my $result = $data->{result}->{key};
+
+    return $self->_get_error( $data ) unless $result->{type};
+
+    my $key_info = {
+        type    => $result->{type},
+        expires => $result->{expires},
+        access_mask => $result->{accessMask},
+    };
+
+    # TODO: add structure for corporation and alliance API
+    if ( defined $result->{rowset}->{row} && $result->{type} eq 'Account' ) {
+        $key_info->{characters} = {};
+        foreach my $char_id ( keys %{ $result->{rowset}->{row} } ) {
+            $key_info->{characters}->{$char_id} = {
+                'character_name'   => $result->{rowset}->{row}->{$char_id}->{characterName},
+                'faction_name'     => $result->{rowset}->{row}->{$char_id}->{factionName}     || '',
+                'corporation_id'   => $result->{rowset}->{row}->{$char_id}->{corporationID},
+                'alliance_name'    => $result->{rowset}->{row}->{$char_id}->{allianceName}    || '',
+                'faction_id'       => $result->{rowset}->{row}->{$char_id}->{factionID}       || '0',
+                'corporation_name' => $result->{rowset}->{row}->{$char_id}->{corporationName},
+                'alliance_id'      => $result->{rowset}->{row}->{$char_id}->{allianceID}      || '0',
+            };
+        }
+    }
+
+    $key_info->{cached_until} = $data->{cachedUntil};
+
+    return $key_info;
+}
+
+=head2 account_status
+
+  my $account_status = $eapi->account_status();
+
+Returns a hashref with the following structure:
+
+  {
+    'cachedUntil' => '2014-06-26 17:17:12',
+    'logon_minutes' => '79114',
+    'logon_count' => '940',
+    'create_date' => '2011-06-22 11:44:37',
+    'paid_until' => '2014-08-26 16:37:43'
+  }
+
+=cut
+
+sub account_status {
+    my ($self) = @_;
+
+    my $data = $self->_load_xml(
+        path                  => 'account/AccountStatus.xml.aspx',
+        requires_auth         => 1,
+    );
+
+    my $result = $data->{result};
+
+    return $self->_get_error( $data ) unless $result->{createDate};
+
+    return {
+        paid_until    => $result->{paidUntil},
+        create_date   => $result->{createDate},
+        logon_count   => $result->{logonCount},
+        logon_minutes => $result->{logonMinutes},
+        cached_until   => $data->{cachedUntil},
+    }
+}
+
+=head2 character_info
+
+  my $character_info = $eapi->character_info( character_id => $character_id );
+
+Returns a hashref with the following structure:
+
+  {
+    'character_name' => 'Char Name',
+    'alliance_id' => '1234567890',
+    'corporation_id' => '987654321',
+    'corporation' => 'Corp Name',
+    'alliance' => 'Alliance Name',
+    'race' => 'Caldari',
+    'bloodline' => 'Achura',
+    'skill_points' => '40955856',
+    'employment_history' => {
+      '23046655' => {
+        'corporation_id' => '123456789',
+        'start_date' => '2013-02-03 13:39:00',
+        'record_id' => '23046655'
+      },
+      '29131760' => {
+        'corporation_id' => '987654321',
+        'start_date' => '2013-11-04 16:40:00',
+        'record_id' => '29131760'
+      },
+    },
+    'ship_type_id' => '670',
+    'account_balance' => '38131.68',
+    'cached_until' => '2014-06-26 17:18:29',
+    'last_known_location' => 'Jita',
+    'character_id' => '12345678',
+    'alliance_date' => '2012-08-05 00:12:00',
+    'corporation_date' => '2012-09-11 20:32:00',
+    'ship_type_name' => 'Capsule',
+    'security_status' => '1.3534973114985',
+    'ship_name' => 'Char Name Capsule'
+  }
+
+=cut
+
+sub character_info {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $data = $self->_load_xml(
+        path          => 'eve/CharacterInfo.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+    );
+
+    my $result = $data->{result};
+
+    return $self->_get_error( $data ) unless $result->{characterID};
+
+    my $info = {
+        character_id        => $result->{characterID},
+        character_name      => $result->{characterName}, 
+        race                => $result->{race}, 
+        bloodline           => $result->{bloodline}, 
+        account_balance     => $result->{accountBalance}, 
+        skill_points        => $result->{skillPoints}, 
+        ship_name           => $result->{shipName}, 
+        ship_type_id        => $result->{shipTypeID}, 
+        ship_type_name      => $result->{shipTypeName}, 
+        corporation_id      => $result->{corporationID}, 
+        corporation         => $result->{corporation}, 
+        corporation_date    => $result->{corporationDate}, 
+        alliance_id         => $result->{allianceID}, 
+        alliance            => $result->{alliance}, 
+        alliance_date       => $result->{allianceDate}, 
+        last_known_location => $result->{lastKnownLocation}, 
+        security_status     => $result->{securityStatus},
+        cached_until        => $data->{cachedUntil},
+    };
+
+    if ( defined $result->{rowset}->{row} ) {
+        foreach my $history_row ( @{$result->{rowset}->{row}} ) {
+            $info->{employment_history}->{$history_row->{recordID}}->{record_id}      = $history_row->{recordID};
+            $info->{employment_history}->{$history_row->{recordID}}->{corporation_id} = $history_row->{corporationID};
+            $info->{employment_history}->{$history_row->{recordID}}->{start_date}     = $history_row->{startDate};
+        }
+    }
+
+    return $info;
+}
+
+=head2 asset_list
+
+  my $asset_list = $eapi->asset_list( character_id => $character_id );
+
+Returns a hashref with the following structure:
+
+  {
+    '1014951232473' => {
+      'contents' => {
+        '1014957890964' => {
+          'type_id' => '2454',
+          'quantity' => '1',
+          'flag' => '87',
+          'raw_quantity' => '-1',
+          'singleton' => '1',
+          'item_id' => '1014957890964'
+        }
+      },
+      'quantity' => '1',
+      'flag' => '4',
+      'location_id' => '60014680',
+      'singleton' => '1',
+      'item_id' => '1014951232473',
+      'type_id' => '32880',
+      'raw_quantity' => '-1'
+    },
+    '1014951385057' => {
+      'type_id' => '1178',
+      'quantity' => '1',
+      'flag' => '4',
+      'raw_quantity' => '-2',
+      'location_id' => '60015001',
+      'singleton' => '1',
+      'item_id' => '1014951385057'
+    }
+  }
+
+=cut
+
+sub asset_list {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $data = $self->_load_xml(
+        path          => 'char/AssetList.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+    );
+
+    my $result = $data->{result};
+
+    return $self->_get_error( $data ) unless $result->{rowset}->{row};
+
+    return $self->_parse_assets( $result );
+}
+
+=head2 contact_list
+
+  my $contact_list = $eapi->contact_list( character_id  => $character_id );
+
+Returns a hashref with the following structure:
+
+  {
+    'contact_list' => {
+      '962693552' => {
+        'standing' => '10',
+        'contact_name' => 'Char Name',
+        'contact_id' => '962693552',
+        'in_watchlist' => undef,
+        'contact_type_id' => '1384'
+      },
+      '3019494' => {
+        'standing' => '0',
+        'contact_name' => 'Char Name 3',
+        'contact_id' => '3019494',
+        'in_watchlist' => undef,
+        'contact_type_id' => '1375'
+      },
+      '1879838281' => {
+        'standing' => '10',
+        'contact_name' => 'Char Name 2',
+        'contact_id' => '1879838281',
+        'in_watchlist' => undef,
+        'contact_type_id' => '1378'
+      }
+    }
+  }
+
+=cut
+
+sub contact_list {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $data = $self->_load_xml(
+        path          => 'char/ContactList.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+    );
+
+    my $result = $data->{result};
+
+    return $self->_get_error( $data ) unless $result->{rowset};
+
+    my $contacts;
+    foreach my $rows ( keys %{$result->{rowset}} ) {
+        next unless defined $result->{rowset}->{$rows}->{row};
+        my $key = $rows; 
+        $key =~ s/L/_l/;
+        $key =~ s/C/_c/; # TODO: more correctly regexp
+        foreach my $contact_id ( keys %{ $result->{rowset}->{$rows}->{row} } ) {
+            $contacts->{$key}->{$contact_id}->{contact_id}      = $contact_id;
+            $contacts->{$key}->{$contact_id}->{standing}        = $result->{rowset}->{$rows}->{row}->{$contact_id}->{standing};
+            $contacts->{$key}->{$contact_id}->{contact_name}    = $result->{rowset}->{$rows}->{row}->{$contact_id}->{contactName};
+            $contacts->{$key}->{$contact_id}->{contact_type_id} = $result->{rowset}->{$rows}->{row}->{$contact_id}->{contactTypeID};
+            if ( $rows eq 'contactList' ) {
+                $contacts->{$key}->{$contact_id}->{in_watchlist} = $result->{rowset}->{$rows}->{row}->{$contact_id}->{inWatchlist};
+            }
+        }
+    }
+
+    return $contacts;
+}
+
+=head2 wallet_transactions
+
+  my $wallet_transactions = $eapi->wallet_transactions( 
+        character_id  => $character_id, 
+        row_count     => $row_count,      # optional, default is 2560
+        account_key   => $account_key,    # optional, default is 1000
+        from_id       => $args{from_id},  # optional, need for offset
+      );
+
+Returns a hashref with the following structure:
+
+  {
+    '3499165305' => {
+      'type_name' => 'Mining Frigate',
+      'quantity' => '1',
+      'client_id' => '90646537',
+      'transaction_date_time' => '2014-06-28 12:23:41',
+      'station_id' => '60015001',
+      'transaction_id' => '3499165305',
+      'transaction_for' => 'personal',
+      'type_id' => '32918',
+      'station_name' => 'Akiainavas III - School of Applied Knowledge',
+      'client_name' => 'Zeta Zhang',
+      'price' => '1201.02',
+      'transaction_type' => 'sell'
+    },
+    '3482136396' => {
+      'type_name' => 'Mining Barge',
+      'quantity' => '1',
+      'client_id' => '1000167',
+      'transaction_date_time' => '2014-06-15 20:15:26',
+      'station_id' => '60014680',
+      'transaction_id' => '3482136396',
+      'transaction_for' => 'personal',
+      'type_id' => '17940',
+      'station_name' => 'Autama V - Moon 9 - State War Academy',
+      'client_name' => 'State War Academy',
+      'price' => '500000.00',
+      'transaction_type' => 'buy'
+    }
+  }
+
+=cut
+
+sub wallet_transactions {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $row_count   = $args{row_count}   || 2560;
+    my $account_key = $args{account_key} || 1000;
+
+
+    my $data = $self->_load_xml(
+        path          => 'char/WalletTransactions.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+        row_count     => $row_count,
+        account_key   => $account_key,
+        from_id       => $args{from_id},
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return $self->_get_error( $data ) unless $result;
+
+    my $trans;
+    foreach my $t_id ( keys %$result ) {
+        $trans->{$t_id} = {
+            transaction_for       => $result->{$t_id}->{transactionFor},
+            transaction_type      => $result->{$t_id}->{transactionType},
+            station_name          => $result->{$t_id}->{stationName},
+            station_id            => $result->{$t_id}->{stationID},
+            client_name           => $result->{$t_id}->{clientName},
+            client_id             => $result->{$t_id}->{clientID},
+            price                 => $result->{$t_id}->{price},
+            type_id               => $result->{$t_id}->{typeID},
+            type_name             => $result->{$t_id}->{typeName},
+            quantity              => $result->{$t_id}->{quantity},
+            transaction_id        => $t_id,
+            transaction_date_time => $result->{$t_id}->{transactionDateTime},
+        };
+    }
+
+    $trans->{cached_until} = $data->{cachedUntil};
+
+    return $trans;
+}
+
+=head2 wallet_journal
+
+  my $wallet_journal = $eapi->wallet_journal( 
+        character_id  => $character_id, 
+        row_count     => $row_count,      # optional, default is 2560
+        account_key   => $account_key,    # optional, default is 1000
+        from_id       => $args{from_id},  # optional, need for offset
+      );
+
+Returns a hashref with the following structure:
+
+  {
+    '9729070529' => {
+                'owner_name2' => 'Milolika Muvila',
+                'arg_id1' => '0',
+                'date' => '2014-07-08 19:02:53',
+                'reason' => '',
+                'tax_receiver_id' => '',
+                'owner_name1' => 'Cyno Chain',
+                'amount' => '814900000.00',
+                'owner_id1' => '93496706',
+                'tax_amount' => '',
+                'balance' => '826371087.94',
+                'arg_name1' => '3513456219',
+                'ref_id' => '9729070529',
+                'ref_type_id' => '2',
+                'owner_id2' => '94701913'
+              },
+    '9729071394' => {
+                'owner_name2' => '',
+                'arg_id1' => '0',
+                'date' => '2014-07-08 19:03:04',
+                'reason' => '',
+                'tax_receiver_id' => '',
+                'owner_name1' => 'Milolika Muvila',
+                'amount' => '-28369982.50',
+                'owner_id1' => '94701913',
+                'tax_amount' => '',
+                'balance' => '785777605.44',
+                'arg_name1' => '',
+                'ref_id' => '9729071394',
+                'ref_type_id' => '42',
+                'owner_id2' => '0'
+              }
+  }
+
+=cut
+
+sub wallet_journal {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $row_count   = $args{row_count}   || 2560;
+    my $account_key = $args{account_key} || 1000;
+
+
+    my $data = $self->_load_xml(
+        path          => 'char/WalletJournal.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+        row_count     => $row_count,
+        account_key   => $account_key,
+        from_id       => $args{from_id},
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return $self->_get_error( $data ) unless $result;
+
+    my $journal;
+    foreach my $r_id ( keys %$result ) {
+        $journal->{$r_id} = {
+            ref_id          => $r_id,
+            date            => $result->{$r_id}->{date},
+            ref_type_id     => $result->{$r_id}->{refTypeID},
+            owner_name1     => $result->{$r_id}->{ownerName1},
+            owner_id1       => $result->{$r_id}->{ownerID1},
+            owner_name2     => $result->{$r_id}->{ownerName2},
+            owner_id2       => $result->{$r_id}->{ownerID2},
+            arg_name1       => $result->{$r_id}->{argName1},
+            arg_id1         => $result->{$r_id}->{argID1},
+            amount          => $result->{$r_id}->{amount},
+            balance         => $result->{$r_id}->{balance},
+            reason          => $result->{$r_id}->{reason},
+            tax_amount      => $result->{$r_id}->{taxAmount},
+            tax_receiver_id => $result->{$r_id}->{taxReceiverID},
+        };
+    }
+
+    $journal->{cached_until} = $data->{cachedUntil};
+
+    return $journal;
+}
+
+=head2 mail_messages
+
+  my $mail_messages = $eapi->mail_messages( character_id  => $character_id );
+
+Returns a hashref with the following structure:
+
+{
+  '331477595' => {
+                 'to_list_id' => '145156607',
+                 'message_id' => '331477595',
+                 'to_character_ids' => '',
+                 'sender_id' => '91669871',
+                 'sent_date' => '2013-10-08 06:30:00',
+                 'to_corp_or_alliance_id' => '',
+                 'title' => "\x{420}\x{430}\x{441}\x{43f}\x{440}\x{43e}\x{434}\x{430}\x{436}\x{430}",
+                 'sender_name' => 'Valerii Ostudnev'
+               },
+  '336393982' => {
+                 'to_list_id' => '',
+                 'message_id' => '336393982',
+                 'to_character_ids' => '1203082547',
+                 'sender_id' => '90922771',
+                 'sent_date' => '2014-03-02 13:30:00',
+                 'to_corp_or_alliance_id' => '',
+                 'title' => 'TSG -&gt; Z-H',
+                 'sender_name' => 'Chips Merkaba'
+               },
+  'cached_until' => '2014-07-10 18:33:59'
+}
+
+=cut
+
+sub mail_messages {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $data = $self->_load_xml(
+        path          => 'char/MailMessages.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return $self->_get_error( $data ) unless $result;
+
+    my $messages;
+  
+    foreach my $mes_id ( keys %$result ) {
+        $messages->{$mes_id} = {
+            message_id              => $mes_id,
+            sender_id               => $result->{$mes_id}->{senderID},
+            sender_name             => $result->{$mes_id}->{senderName},
+            sent_date               => $result->{$mes_id}->{sentDate},
+            title                   => $result->{$mes_id}->{title},
+            to_corp_or_alliance_id  => $result->{$mes_id}->{toCorpOrAllianceID},
+            to_character_ids        => $result->{$mes_id}->{toCharacterIDs},
+            to_list_id              => $result->{$mes_id}->{toListID},
+        };
+    }
+    $messages->{cached_until} = $data->{cachedUntil};
+
+    return $messages;
+}
+
+=head2 mail_bodies
+
+  my $mail_bodies = $eapi->mail_bodies( character_id  => $character_id, ids => $ids );
+
+Returns a hashref with the following structure:
+
+
+{
+  'cached_until' => '2024-07-07 18:13:16',
+  'missing_message_ids' => '331477591',
+  '331477595' => "<font size="12" color="#bfffffff"></font><font size="12" color="#fff7931e"><a href="contract:30004977//73497683">[Multiple Items]</a></font><font size="12" color="#bfffffff"> x{428}x{438}x{43b}x{434}x{43e}x{432}x{44b}x{439} x{43c}x{43e}x{430} 30x{43a}x{43a}<br></font><font size="12" color="#fff7931e"><a href="contract:30004977//73497661">[Multiple Items]</a></font><font size="12" color="#bfffffff"> x{410}x{440}x{442}x{438}-x{421}x{411} x{413}x{43d}x{43e}x{437}x{438}x{441} 80x{43a}x{43a}<br></font><font size="12" color="#fff7931e"><a href="contract:30004977//73497644">[Multiple Items]</a></font><font size="12" color="#bfffffff"> x{410}x{440}x{43c}x{43e}x{440}x{43d}x{44b}x{439} x{431}x{440}x{443}x{442}x{438}x{43a}x{441} 60x{43a}x{43a}</font>"
+}
+
+=cut
+
+sub mail_bodies {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+    croak('No comma separated messages ids specified') unless $args{ids};
+
+    my $data = $self->_load_xml(
+        path          => 'char/MailBodies.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+        ids           => $args{ids},
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return $self->_get_error( $data ) unless $result;
+
+    my $bodies;
+    
+    foreach my $mes_id ( keys %$result ) {
+        $bodies->{$mes_id} = $result->{$mes_id}->{content};
+    }
+
+    $bodies->{cached_until}        = $data->{cachedUntil};
+    $bodies->{missing_message_ids} = $data->{result}->{missingMessageIDs};
+
+    return $bodies;
+}
+
+=head2 mail_lists
+
+  my $mail_lists = $eapi->mail_lists( character_id  => $character_id );
+
+Returns a hashref with the following structure:
+
+{
+    'cached_until' => '2014-07-11 00:06:57',
+    '145156367' => 'RAISA Shield Fits'
+}
+
+=cut
+
+sub mail_lists {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $data = $self->_load_xml(
+        path          => 'char/mailinglists.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return $self->_get_error( $data ) unless $result;
+
+    my $lists;
+    foreach my $list_id ( keys %$result ) {
+        $lists->{$list_id} = $result->{$list_id}->{displayName};
+    }
+
+    $lists->{cached_until} = $data->{cachedUntil};
+  
+    return $lists;
+}
+
+=head2 character_name
+
+  my $character_name = $eapi->character_name( ids => '90922771,94701913' );
+
+Returns a hashref with the following structure:
+
+{
+  '94701913' => 'Milolika Muvila',
+  'cached_until' => '2014-08-10 20:59:55',
+  '90922771' => 'Chips Merkaba'
+}
+
+=cut
+
+sub character_name {
+    my ($self, %args) = @_;
+
+    croak('No comma separated character ids specified') unless $args{ids};
+
+    my $data = $self->_load_xml(
+        path => 'eve/CharacterName.xml.aspx',
+        ids  => $args{ids},
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return $self->_get_error( $data ) unless $result;
+
+    my $names;
+    foreach my $char_id ( keys %$result ) {
+        $names->{$char_id} = $result->{$char_id}->{name};
+    }
+
+    $names->{cached_until} = $data->{cachedUntil};
+  
+    return $names;
+}
+
+# Generate error answer
+sub _get_error {
+    my ($self, $data) = @_;
+
+    return {
+        error => $data->{error} || { code => 500, content => 'Unknown error' },
+    };
+}
+
+# convert keys
+sub _parse_assets {
+    my ($self, $xml) = @_;
+
+    return () unless $xml;
+
+    my $parsed;
+    my $rows = $xml->{rowset}->{row};
+
+    foreach my $id ( keys %$rows ) {
+        $parsed->{$id}->{item_id}      = $id;
+        $parsed->{$id}->{location_id}  = $rows->{$id}->{locationID} if $rows->{$id}->{locationID};
+        $parsed->{$id}->{raw_quantity} = $rows->{$id}->{rawQuantity};
+        $parsed->{$id}->{quantity}     = $rows->{$id}->{quantity};
+        $parsed->{$id}->{flag}         = $rows->{$id}->{flag};
+        $parsed->{$id}->{singleton}    = $rows->{$id}->{singleton};
+        $parsed->{$id}->{type_id}      = $rows->{$id}->{typeID};
+
+        if ( $rows->{$id}->{rowset} && $rows->{$id}->{rowset}->{name} eq 'contents' ) {
+            $parsed->{$id}->{contents} = $self->_parse_assets( $rows->{$id} );
+        }
+    }
+
+    return $parsed;
 }
 
 sub _load_xml {
@@ -441,13 +1202,26 @@ sub _retrieve_xml {
     if ($args{character_id}) {
         $params->{characterID} = $args{character_id};
     }
+    if ($args{row_count}) {
+        $params->{rowCount}    = $args{row_count};
+    }
+    if ($args{account_key}) {
+        $params->{accountKey}  = $args{account_key};
+    }
+    if ($args{from_id}) {
+        $params->{fromID}      = $args{from_id};
+    }
+    if ($args{ids}) {
+        $params->{ids}         = $args{ids};
+    }
 
     my $uri = URI->new( $self->api_url() . '/' . $args{path} );
     $uri->query_form( $params );
 
-    my $xml = LWP::Simple::get( $uri->as_string() );
+    my $ua = LWP::UserAgent->new;
+    my $xml = $ua->get( $uri->as_string() );
 
-    return $xml;
+    return $xml->content;
 }
 
 sub _parse_xml {
@@ -456,7 +1230,7 @@ sub _parse_xml {
     my $data = XML::Simple::XMLin(
         $xml,
         ForceArray => ['row'],
-        KeyAttr    => ['characterID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name'],
+        KeyAttr    => ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
     );
 
     return $data;
