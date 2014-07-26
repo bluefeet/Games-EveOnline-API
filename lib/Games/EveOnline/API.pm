@@ -1141,6 +1141,46 @@ sub character_name {
     return $names;
 }
 
+=head2 character_id
+
+  my $character_id = $eapi->character_id( names => 'Milolika Muvila,Chips Merkaba' );
+
+Returns a hashref with the following structure:
+
+{
+  '94701913' => 'Milolika Muvila',
+  'cached_until' => '2014-08-10 20:59:55',
+  '90922771' => 'Chips Merkaba'
+}
+
+=cut
+
+
+# TODO: Add Tests!
+sub character_ids {
+    my ($self, %args) = @_;
+
+    croak('No comma separated character names specified') unless $args{names};
+
+    my $data = $self->_load_xml(
+        path  => 'eve/CharacterID.xml.aspx',
+        names => $args{names},
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return $self->_get_error( $data ) unless $result;
+
+    my $ids;
+    foreach my $char_id ( keys %$result ) {
+        $ids->{$char_id} = $result->{$char_id}->{name};
+    }
+
+    $ids->{cached_until} = $data->{cachedUntil};
+  
+    return $ids;
+}
+
 =head2 station_list
 
   my $station_list = $eapi->station_list();
@@ -1270,6 +1310,9 @@ sub _retrieve_xml {
     }
     if ($args{ids}) {
         $params->{ids}         = $args{ids};
+    }
+    if ($args{names}) {
+        $params->{names}         = $args{names};
     }
 
     my $uri = URI->new( $self->api_url() . '/' . $args{path} );
