@@ -1141,6 +1141,63 @@ sub character_name {
     return $names;
 }
 
+=head2 station_list
+
+  my $station_list = $eapi->station_list();
+
+Returns a hashref with the following structure:
+
+{
+  '61000051' => {
+    'station_type_id' => '21644',
+    'corporation_name' => 'Nulli Secunda Holding',
+    'corporation_id' => '1463841432',
+    'station_name' => 'DB1R-4 VIII - We brought the Trash Out',
+    'solar_system_id' => '30004470',
+    'station_id' => '61000051'
+  },
+  '61000438' => {
+    'station_type_id' => '21646',
+    'corporation_name' => 'Greater Western Co-Prosperity Sphere Exec',
+    'corporation_id' => '98237912',
+    'station_name' => 'F-D49D III - Error - Clever name not found',
+    'solar_system_id' => '30000279',
+    'station_id' => '61000438'
+  }
+}
+
+=cut
+
+# TODO: Add Test!
+sub station_list {
+    my ($self) = @_;
+
+    my $data = $self->_load_xml(
+        path => 'eve/ConquerableStationList.xml.aspx',
+    );
+
+    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
+
+    my $stations = {};
+
+    my $rows = $data->{result}->{rowset}->{row};
+    foreach my $station_id (keys %$rows) {
+        $stations->{$station_id} = {
+            station_id       => $station_id,
+            station_name     => $rows->{$station_id}->{stationName},
+            station_type_id  => $rows->{$station_id}->{stationTypeID},
+            solar_system_id  => $rows->{$station_id}->{solarSystemID},
+            corporation_id   => $rows->{$station_id}->{corporationID},
+            corporation_name => $rows->{$station_id}->{corporationName},
+        }; 
+    }
+
+    $stations->{cached_until} = $data->{cachedUntil};
+
+    return $stations;
+
+}
+
 # Generate error answer
 sub _get_error {
     my ($self, $data) = @_;
@@ -1230,7 +1287,7 @@ sub _parse_xml {
     my $data = XML::Simple::XMLin(
         $xml,
         ForceArray => ['row'],
-        KeyAttr    => ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
+        KeyAttr    => ['characterID', 'stationID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
     );
 
     return $data;
