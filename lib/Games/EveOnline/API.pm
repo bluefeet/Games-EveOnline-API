@@ -492,7 +492,7 @@ sub api_key_info {
     };
 
     # TODO: add structure for corporation and alliance API
-    if ( defined $result->{rowset}->{row} && $result->{type} eq 'Account' ) {
+    if ( defined $result->{rowset}->{row} && $result->{type} ~~ ['Account', 'Character'] ) {
         $key_info->{characters} = {};
         foreach my $char_id ( keys %{ $result->{rowset}->{row} } ) {
             $key_info->{characters}->{$char_id} = {
