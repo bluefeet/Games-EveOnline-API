@@ -124,7 +124,7 @@ sub skill_tree {
 
     my $result = {};
 
-    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $group_rows = $data->{result}->{rowset}->{row};
     foreach my $group_id (keys %$group_rows) {
@@ -178,7 +178,7 @@ sub ref_types {
         path => 'eve/RefTypes.xml.aspx',
     );
 
-    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $ref_types = {};
 
@@ -214,7 +214,7 @@ sub sovereignty {
         path => 'map/Sovereignty.xml.aspx',
     );
 
-    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $systems = {};
 
@@ -265,7 +265,7 @@ sub characters {
         requires_auth => 1,
     );
 
-    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $characters = {};
     my $rows = $data->{result}->{rowset}->{row};
@@ -338,7 +338,7 @@ sub character_sheet {
         character_id  => $character_id,
     );
 
-    return $self->_get_error( $data ) unless $data->{result};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $result = $data->{result};
 
@@ -421,7 +421,7 @@ sub skill_in_training {
     );
     my $result = $data->{result};
 
-    return $self->_get_error( $data ) unless $result->{skillInTraining};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $training = {
         current_tq_time => $result->{currentTQTime},
@@ -483,7 +483,7 @@ sub api_key_info {
 
     my $result = $data->{result}->{key};
 
-    return $self->_get_error( $data ) unless $result->{type};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $key_info = {
         type    => $result->{type},
@@ -538,7 +538,7 @@ sub account_status {
 
     my $result = $data->{result};
 
-    return $self->_get_error( $data ) unless $result->{createDate};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     return {
         paid_until    => $result->{paidUntil},
@@ -604,7 +604,7 @@ sub character_info {
 
     my $result = $data->{result};
 
-    return $self->_get_error( $data ) unless $result->{characterID};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $info = {
         character_id        => $result->{characterID},
@@ -691,7 +691,7 @@ sub asset_list {
 
     my $result = $data->{result};
 
-    return $self->_get_error( $data ) unless $result->{rowset}->{row};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     return $self->_parse_assets( $result );
 }
@@ -744,7 +744,7 @@ sub contact_list {
 
     my $result = $data->{result};
 
-    return $self->_get_error( $data ) unless $result->{rowset};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $contacts;
     foreach my $rows ( keys %{$result->{rowset}} ) {
@@ -831,7 +831,7 @@ sub wallet_transactions {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return $self->_get_error( $data ) unless $result;
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $trans;
     foreach my $t_id ( keys %$result ) {
@@ -925,7 +925,7 @@ sub wallet_journal {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return $self->_get_error( $data ) unless $result;
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $journal;
     foreach my $r_id ( keys %$result ) {
@@ -1129,7 +1129,7 @@ sub character_name {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return $self->_get_error( $data ) unless $result;
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $names;
     foreach my $char_id ( keys %$result ) {
@@ -1169,7 +1169,7 @@ sub character_ids {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return $self->_get_error( $data ) unless $result;
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $ids;
     foreach my $char_id ( keys %$result ) {
@@ -1216,7 +1216,7 @@ sub station_list {
         path => 'eve/ConquerableStationList.xml.aspx',
     );
 
-    return $self->_get_error( $data ) unless $data->{result}->{rowset}->{row};
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $stations = {};
 
