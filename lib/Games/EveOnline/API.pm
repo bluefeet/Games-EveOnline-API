@@ -998,7 +998,7 @@ sub mail_messages {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return $self->_get_error( $data ) unless $result;
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $messages;
   
@@ -1050,7 +1050,7 @@ sub mail_bodies {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return $self->_get_error( $data ) unless $result;
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $bodies;
     
@@ -1091,7 +1091,7 @@ sub mail_lists {
 
     my $result = $data->{result}->{rowset}->{row};
 
-    return $self->_get_error( $data ) unless $result;
+    return $self->_get_error( $data ) if defined $data->{error};
 
     my $lists;
     foreach my $list_id ( keys %$result ) {
