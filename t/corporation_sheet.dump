@@ -20,6 +20,7 @@
           'tax_rate' => '5',
           'corporation_name' => 'Zaporozhye Sich',
           'ceo_id' => '423270919',
+          'ticker' => 'ZPR',
           'url' => 'http://',
           'station_name' => 'Lasleinur V - Moon 11 - Republic Fleet Assembly Plant'
         }

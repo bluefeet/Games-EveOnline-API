@@ -1289,6 +1289,7 @@ sub corporation_sheet {
     $corp_info->{cached_until}      = $data->{cachedUntil};
     $corp_info->{corporation_id}    = $result->{corporationID};
     $corp_info->{corporation_name}  = $result->{corporationName};
+    $corp_info->{ticker}            = $result->{ticker};
     $corp_info->{ceo_id}            = $result->{ceoID};
     $corp_info->{ceo_name}          = $result->{ceoName};
     $corp_info->{station_id}        = $result->{stationID};
