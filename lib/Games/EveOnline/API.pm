@@ -1155,8 +1155,6 @@ Returns a hashref with the following structure:
 
 =cut
 
-
-# TODO: Add Tests!
 sub character_ids {
     my ($self, %args) = @_;
 
@@ -1208,7 +1206,6 @@ Returns a hashref with the following structure:
 
 =cut
 
-# TODO: Add Test!
 sub station_list {
     my ($self) = @_;
 
@@ -1236,6 +1233,82 @@ sub station_list {
 
     return $stations;
 
+}
+
+=head2 corporation_sheet
+
+  my $station_list = $eapi->corporation_sheet();
+
+Returns a hashref with the following structure:
+
+{
+    'shares' => '1000',
+    'faction_id' => '0',
+    'cached_until' => '2014-08-24 22:18:02',
+    'member_count' => '43',
+    'alliance_id' => '0',
+    'corporation_id' => '1043735888',
+    'description' => "\x{418}\x{441}\x{441}\x{43b}\x{435}\x{434}\x{43e}\x{432}\x{430}\x{43d}\x{438}\x{44f} \x{438} \x{440}\x{430}\x{437}\x{440}\x{430}\x{431}\x{43e}\x{442}\x{43a}\x{438}",
+    'station_id' => '60004861',
+    'ceo_name' => 'Krasotulya',
+    'logo' => {
+                'color3' => '674',
+                'color1' => '677',
+                'shape3' => '415',
+                'shape2' => '480',
+                'graphic_id' => '0',
+                'shape1' => '437',
+                'color2' => '676'
+              },
+    'tax_rate' => '5',
+    'corporation_name' => 'Zaporozhye Sich',
+    'ceo_id' => '423270919',
+    'url' => 'http://',
+    'station_name' => 'Lasleinur V - Moon 11 - Republic Fleet Assembly Plant'
+}
+
+=cut
+
+sub corporation_sheet {
+    my ($self, %args) = @_;
+
+    croak('No corporation_id specified') unless $args{corporation_id};
+
+    my $data = $self->_load_xml(
+        path            => 'corp/CorporationSheet.xml.aspx',
+        requires_auth => 1,
+        corporation_id  => $args{corporation_id},
+    );
+
+    return $self->_get_error( $data ) if defined $data->{error};
+
+    my $corp_info = {};
+
+    my $result = $data->{result};
+    
+    $corp_info->{cached_until}      = $data->{cachedUntil};
+    $corp_info->{corporation_id}    = $result->{corporationID};
+    $corp_info->{corporation_name}  = $result->{corporationName};
+    $corp_info->{ceo_id}            = $result->{ceoID};
+    $corp_info->{ceo_name}          = $result->{ceoName};
+    $corp_info->{station_id}        = $result->{stationID};
+    $corp_info->{station_name}      = $result->{stationName};
+    $corp_info->{description}       = $result->{description};
+    $corp_info->{url}               = $result->{url};
+    $corp_info->{alliance_id}       = $result->{allianceID};
+    $corp_info->{faction_id}        = $result->{factionID};
+    $corp_info->{tax_rate}          = $result->{taxRate};
+    $corp_info->{member_count}      = $result->{memberCount};
+    $corp_info->{shares}            = $result->{shares};
+    $corp_info->{logo}->{graphic_id}  = $result->{logo}->{graphicID};
+    $corp_info->{logo}->{shape1}      = $result->{logo}->{shape1};
+    $corp_info->{logo}->{shape2}      = $result->{logo}->{shape2};
+    $corp_info->{logo}->{shape3}      = $result->{logo}->{shape3};
+    $corp_info->{logo}->{color1}      = $result->{logo}->{color1};
+    $corp_info->{logo}->{color2}      = $result->{logo}->{color2};
+    $corp_info->{logo}->{color3}      = $result->{logo}->{color3};
+
+    return $corp_info;
 }
 
 # Generate error answer
@@ -1312,7 +1385,10 @@ sub _retrieve_xml {
         $params->{ids}         = $args{ids};
     }
     if ($args{names}) {
-        $params->{names}         = $args{names};
+        $params->{names}       = $args{names};
+    }
+    if ($args{corporation_id}) {
+        $params->{corporationID} = $args{corporation_id};
     }
 
     my $uri = URI->new( $self->api_url() . '/' . $args{path} );
@@ -1330,7 +1406,7 @@ sub _parse_xml {
     my $data = XML::Simple::XMLin(
         $xml,
         ForceArray => ['row'],
-        KeyAttr    => ['characterID', 'stationID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'typeID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
+        KeyAttr    => ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'typeID', 'stationID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
     );
 
     return $data;

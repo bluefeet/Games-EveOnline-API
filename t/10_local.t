@@ -49,11 +49,16 @@ my $feeds = [qw(
     mail_bodies
     mail_messages
     character_name
+    character_ids
+    station_list
+    corporation_sheet
 )];
 
 my $args = {
-    'mail_bodies'    => { ids => '331477595,331477591' },
-    'character_name' => { ids => '90922771,94701913' },
+    'mail_bodies'       => { ids => '331477595,331477591' },
+    'character_name'    => { ids => '90922771,94701913' },
+    'character_ids'     => { names => 'Chips Merkaba, libzar, Krion'},
+    'corporation_sheet' => { corporation_id => 1043735888 },
 };
 
 foreach my $feed (@$feeds) {

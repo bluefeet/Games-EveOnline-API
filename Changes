@@ -2,8 +2,13 @@ Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
 
+0.13      2014-08-24
+ -  Add corporation_sheet function (chipsoid)
+ -  Fix tests for wallet transactions (chipsoid)
+ -  Add tests for character_ids and station_list  (chipsoid)
+
 0.12      2014-07-26
- -  Add station_list function for player owned outposts
+ -  Add station_list function for player owned outposts (chipsoid)
 
 0.11      2014-07-13
  -  replace LWP::Simple to LWP::UserAgent cause first module can't return content if response code not equal 200 (chipsoid)
