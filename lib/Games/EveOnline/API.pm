@@ -734,12 +734,14 @@ sub contact_list {
     my ($self, %args) = @_;
 
     my $character_id = $args{character_id} || $self->character_id();
-    croak('No character_id specified') unless $character_id;
+    croak('No character_id specified') if ! $character_id && $args{type} && $args{type} ne 'corp';
+
+    my $type = $args{type} && $args{type} eq 'corp' ? 'corp' : 'char';
 
     my $data = $self->_load_xml(
-        path          => 'char/ContactList.xml.aspx',
+        path          => "$type/ContactList.xml.aspx",
         requires_auth => 1,
-        character_id  => $character_id,
+        character_id  => $type eq 'char' ? $character_id : undef,
     );
 
     my $result = $data->{result};
@@ -762,6 +764,8 @@ sub contact_list {
             }
         }
     }
+
+    $contacts->{cached_until} = $data->{cachedUntil};
 
     return $contacts;
 }
