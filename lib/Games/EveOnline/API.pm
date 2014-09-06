@@ -45,6 +45,7 @@ provider.  If you over-use the API I'm sure you'll eventually get blocked.
 =cut
 
 use Types::Standard qw( Int Str );
+use Type::Utils qw( class_type );
 
 use URI;
 use LWP::UserAgent qw();
@@ -73,12 +74,23 @@ The URL that will be used to access the Eve Online API.
 Defaults to L<https://api.eveonline.com>.  Normally you
 won't want to change this.
 
+=head2 ua
+
+The underlying L<LWP::UserAgent> object.  Default to a new one
+with no special arguments.  Override this if you want to, for
+example, enable keepalive or an HTTP proxy.
+
 =cut
 
-has user_id      => (is=>'ro', isa=>Int );
-has api_key      => (is=>'ro', isa=>Str );
-has character_id => (is=>'ro', isa=>Int );
-has api_url      => (is=>'ro', isa=>Str, default=>'https://api.eveonline.com');
+has user_id      => (is=>'ro',   isa=>Int );
+has api_key      => (is=>'ro',   isa=>Str );
+has character_id => (is=>'ro',   isa=>Int );
+has api_url      => (is=>'ro',   isa=>Str, default=>'https://api.eveonline.com');
+has ua           => (is=>'lazy', isa=>class_type('LWP::UserAgent'));
+
+sub _build_ua {
+    return LWP::UserAgent->new;
+}
 
 =head1 ANONYMOUS METHODS
 
@@ -485,14 +497,16 @@ sub api_key_info {
 
     return $self->_get_error( $data ) if defined $data->{error};
 
+    my $type = $result->{type};
+
     my $key_info = {
-        type    => $result->{type},
-        expires => $result->{expires},
+        type        => $type,
+        expires     => $result->{expires},
         access_mask => $result->{accessMask},
     };
 
     # TODO: add structure for corporation and alliance API
-    if ( defined $result->{rowset}->{row} && $result->{type} ~~ ['Account', 'Character'] ) {
+    if ( defined $result->{rowset}->{row} and $type and ($type eq 'Account' or $type eq 'Character') ) {
         $key_info->{characters} = {};
         foreach my $char_id ( keys %{ $result->{rowset}->{row} } ) {
             $key_info->{characters}->{$char_id} = {
@@ -1399,8 +1413,7 @@ sub _retrieve_xml {
     my $uri = URI->new( $self->api_url() . '/' . $args{path} );
     $uri->query_form( $params );
 
-    my $ua = LWP::UserAgent->new;
-    my $xml = $ua->get( $uri->as_string() );
+    my $xml = $self->ua->get( $uri->as_string() );
 
     return $xml->content;
 }

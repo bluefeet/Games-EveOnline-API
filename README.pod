@@ -63,6 +63,12 @@ The URL that will be used to access the Eve Online API.
 Defaults to L<https://api.eveonline.com>.  Normally you
 won't want to change this.
 
+=head2 ua
+
+The underlying L<LWP::UserAgent> object.  Default to a new one
+with no special arguments.  Override this if you want to, for
+example, enable keepalive or an HTTP proxy.
+
 =head1 ANONYMOUS METHODS
 
 These methods may be called anonymously, without authentication.
