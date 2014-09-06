@@ -514,9 +514,9 @@ Returns a hashref with the following structure:
   '90922771' => 'Chips Merkaba'
 }
 
-=head2 character_id
+=head2 character_ids
 
-  my $character_id = $eapi->character_id( names => 'Milolika Muvila,Chips Merkaba' );
+  my $character_ids = $eapi->character_ids( names => 'Milolika Muvila,Chips Merkaba' );
 
 Returns a hashref with the following structure:
 
