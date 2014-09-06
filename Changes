@@ -1,35 +1,20 @@
 Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
-
-0.13      2014-08-24
- -  Add corporation_sheet function (chipsoid)
- -  Fix tests for wallet transactions (chipsoid)
- -  Add tests for character_ids and station_list  (chipsoid)
-
-0.12      2014-07-26
- -  Add station_list function for player owned outposts (chipsoid)
-
-0.11      2014-07-13
- -  replace LWP::Simple to LWP::UserAgent cause first module can't return content if response code not equal 200 (chipsoid)
- -  add error code structure in answer to all functions (chipsoid)
-
-0.10      2014-07-10
+ - Add corporation_sheet function (chipsoid)
+ - Fix tests for wallet transactions (chipsoid)
+ - Add tests for character_ids and station_list  (chipsoid)
+ - Add station_list function for player owned outposts (chipsoid)
+ - replace LWP::Simple to LWP::UserAgent cause first module can't return content
+   if response code not equal 200 (chipsoid)
+ - add error code structure in answer to all functions (chipsoid)
  - add character_name function (chipsoid)
-
-0.09      2014-07-10
  - add functions for eve-mails (chipsoid)
-
-0.08      2014-07-09
  - add wallet_journal and wallet_transactions functions (chipsoid)
-
-0.07      2014-06-28
  - fix character_sheet function and test for it (chipsoid)
-
-0.06      2014-06-26
- - add api_key_info, account_status, character_info, asset_list, contact_list 
+ - add api_key_info, account_status, character_info, asset_list, contact_list
    functions for API (chipsoid)
- - add itemID and contactID to forceArray attribute in xml2hash converter
+ - add itemID and contactID to forceArray attribute in xml2hash converter (chipsoid)
 
 0.05      2014-06-22
  - Use Moo and Type::Tiny instead of Moose.
