@@ -1,6 +1,8 @@
 Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
+
+0.07      2014-09-06
  - Documentation edits to properly format code and data samples.
 
 0.06      2014-09-06
