@@ -6,19 +6,19 @@ Games::EveOnline::API - A simple Perl wrapper around the EveOnline XML API.
 
 =head1 SYNOPSIS
 
-  use Games::EveOnline::API;
-  my $eapi = Games::EveOnline::API->new();
-  
-  my $skill_groups = $eapi->skill_tree();
-  my $ref_types = $eapi->ref_types();
-  my $systems = $eapi->sovereignty();
-  
-  # The rest of the methods require authentication.
-  my $eapi = Games::EveOnline::API->new( user_id=>'..', api_key=>'..' );
-  
-  my $characters = $eapi->characters();
-  my $sheet = $eapi->character_sheet( character_id => $character_id );
-  my $in_training = $eapi->skill_in_training( character_id => $character_id );
+    use Games::EveOnline::API;
+    my $eapi = Games::EveOnline::API->new();
+    
+    my $skill_groups = $eapi->skill_tree();
+    my $ref_types    = $eapi->ref_types();
+    my $systems      = $eapi->sovereignty();
+    
+    # The rest of the methods require authentication.
+    my $eapi = Games::EveOnline::API->new( user_id => '..', api_key => '..' );
+    
+    my $characters  = $eapi->characters();
+    my $sheet       = $eapi->character_sheet( character_id => $character_id );
+    my $in_training = $eapi->skill_in_training( character_id => $character_id );
 
 =head1 DESCRIPTION
 
@@ -104,7 +104,7 @@ The data structure is:
 
 =head2 ref_types
 
-  my $ref_types = $eapi->ref_types();
+    my $ref_types = $eapi->ref_types();
 
 Returns a simple hash structure containing definitions of the
 various financial transaction types.  This is useful when pulling
@@ -160,25 +160,25 @@ a sample:
         'blood_line'       => 'Amarr',
         'corporation_name' => 'Bellator Apparatus',
         'corporation_id'   => '1044143901',
-
+    
         'skills' => {
             '3455' => {
                 'level'        => '2',
                 'skill_points' => '1415'
             },
-
+    
             # Removed the rest of the skills for readability.
         },
-
+    
         'attribute_enhancers' => {
             'memory' => {
                 'value' => '3',
                 'name'  => 'Memory Augmentation - Basic'
             },
-
+    
             # Removed the rest of the enhancers for readability.
         },
-
+    
         'attributes' => {
             'memory'       => '7',
             'intelligence' => '7',

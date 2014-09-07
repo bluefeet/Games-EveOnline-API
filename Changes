@@ -1,6 +1,7 @@
 Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
+ - Documentation edits to properly format code and data samples.
 
 0.06      2014-09-06
  - Add corporation_sheet function (chipsoid)
