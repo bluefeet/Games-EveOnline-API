@@ -342,23 +342,42 @@ sub character_sheet {
 
     my $result = $data->{result};
 
-    my $sheet         = {};
-    my $enhancers     = $sheet->{attribute_enhancers} = {};
-    my $enhancer_rows = $result->{attributeEnhancers};
-    foreach my $attribute (keys %$enhancer_rows) {
-        my ($real_attribute) = ($attribute =~ /^([a-z]+)/xm);
-        my $enhancer         = $enhancers->{$real_attribute} = {};
+    my $sheet           = {};
+    my $implants        = {};
+    my $jump_clones     = {};
+    my $jump_clone_imps = {};
 
-        $enhancer->{name}  = $enhancer_rows->{$attribute}->{augmentatorName};
-        $enhancer->{value} = $enhancer_rows->{$attribute}->{augmentatorValue};
+    # implants
+    foreach my $imp_id (  keys %{ $result->{rowset}->{implants}->{row} } ) {
+        $implants->{$imp_id} = $result->{rowset}->{implants}->{row}->{$imp_id}->{typeName};
     }
+
+    # jump clones
+    foreach my $clone_id (  keys %{ $result->{rowset}->{jumpClones}->{row} } ) {
+        $jump_clones->{$clone_id} = 
+          {
+              type_id     => $result->{rowset}->{jumpClones}->{row}->{$clone_id}->{typeID},
+              location_id => $result->{rowset}->{jumpClones}->{row}->{$clone_id}->{locationID},
+              clone_name  => $result->{rowset}->{jumpClones}->{row}->{$clone_id}->{cloneName},
+          };
+    }
+
+    # TODO: jump clone implants
     
     $sheet = {
         character_id        => $result->{characterID},
         date_of_birth       => $result->{DoB},
         ancestry            => $result->{ancestry},
         gender              => $result->{gender},
+        clone_type_id       => $result->{cloneTypeID},
         clone_name          => $result->{cloneName},
+        clone_skill_points  => $result->{cloneSkillPoints},
+        clone_jump_date     => $result->{cloneJumpDate},
+        free_skill_points   => $result->{freeSkillPoints},
+        free_respecs        => $result->{freeRespecs},
+        last_respec_date    => $result->{lastRespecDate},
+        last_timed_respec   => $result->{lastTimedRespec},
+        remote_station_date => $result->{remoteStationDate},
         blood_line          => $result->{bloodLine},
         name                => $result->{name},
         corporation_id      => $result->{corporationID},
@@ -366,8 +385,14 @@ sub character_sheet {
         balance             => $result->{balance},
         race                => $result->{race},
         attributes          => $result->{attributes},
-        clone_skill_points  => $result->{cloneSkillPoints},
-        attribute_enhancers => $enhancers,
+        jump_activation     => $result->{jumpActivation},
+        jump_fatigue        => $result->{jumpFatigue},
+        jump_last_update    => $result->{jumpLastUpdate},
+        home_station_id     => $result->{homeStationID},
+        attribute_enhancers => {}, # deprecated key
+        implants            => $implants,
+        jump_clones         => $jump_clones,
+        jump_clone_implants => $jump_clone_imps,
         cached_until        => $data->{cachedUntil},
     };
 
@@ -382,7 +407,7 @@ sub character_sheet {
 
     # TODO: Add logic to parse next rowsets:
     # certificates, corporationRoles, corporationRolesAtHQ, 
-    # corporationRolesAtBase, corporationRolesAtOther, corporationTitles
+    # corporationRolesAtBase, corporationRolesAtOther, corporationTitles, jumpCloneImplants
 
     return $sheet;
 }
@@ -1408,10 +1433,14 @@ sub _retrieve_xml {
 sub _parse_xml {
     my ($self, $xml) = @_;
 
+    # XML::Simple is not recomended for parse XML cause combined attrs like jumpCloneID and typeID 
+    # in response for char/CharacterSheet (node jumpCloneImplants) are croped
+    # XML::Simple to XML::LibXML or delete KeyAttr parameters and refactor all code and tests
+
     my $data = XML::Simple::XMLin(
         $xml,
         ForceArray => ['row'],
-        KeyAttr    => ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'typeID', 'stationID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
+        KeyAttr    => ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'jumpCloneID', 'typeID', 'stationID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
     );
 
     return $data;
