@@ -2,42 +2,49 @@
 <eveapi version="2">
   <currentTime>2014-06-28 11:43:34</currentTime>
   <result>
-    <characterID>94701913</characterID>
-    <name>Milolika Muvila</name>
-    <DoB>2014-06-05 19:55:49</DoB>
+        <characterID>90922771</characterID>
+    <name>Chips Merkaba</name>
+    <homeStationID>60001804</homeStationID>
+    <DoB>2011-06-25 20:50:00</DoB>
     <race>Caldari</race>
-    <bloodLine>Civire</bloodLine>
-    <ancestry>Entrepreneurs</ancestry>
-    <gender>Female</gender>
-    <corporationName>School of Applied Knowledge</corporationName>
-    <corporationID>1000044</corporationID>
-    <cloneName>Clone Grade Delta</cloneName>
-    <cloneSkillPoints>2800000</cloneSkillPoints>
-    <balance>21418322.39</balance>
+    <bloodLine>Achura</bloodLine>
+    <ancestry>Inventors</ancestry>
+    <gender>Male</gender>
+    <corporationName>The First Foundation</corporationName>
+    <corporationID>928827408</corporationID>
+    <allianceName>SOLAR FLEET</allianceName>
+    <allianceID>1208295500</allianceID>
+    <factionName />
+    <factionID>0</factionID>
+    <cloneTypeID>16715</cloneTypeID>
+    <cloneName>Clone Grade Pi</cloneName>
+    <cloneSkillPoints>54600000</cloneSkillPoints>
+    <freeSkillPoints>0</freeSkillPoints>
+    <freeRespecs>1</freeRespecs>
+    <cloneJumpDate>2014-11-28 16:13:39</cloneJumpDate>
+    <lastRespecDate>2014-04-03 15:03:06</lastRespecDate>
+    <lastTimedRespec>2014-04-03 15:03:06</lastTimedRespec>
+    <remoteStationDate>0001-01-01 00:00:00</remoteStationDate>
+    <rowset name="jumpClones" key="jumpCloneID" columns="jumpCloneID,typeID,locationID,cloneName">
+      <row jumpCloneID="20801559" typeID="164" locationID="60003043" cloneName="" />
+      <row jumpCloneID="20069695" typeID="164" locationID="60011866" cloneName="" />
+    </rowset>
+    <rowset name="jumpCloneImplants" key="jumpCloneID" columns="jumpCloneID,typeID,typeName">
+    </rowset>
+    <jumpActivation>2014-11-24 21:24:22</jumpActivation>
+    <jumpFatigue>2014-11-24 21:58:18</jumpFatigue>
+    <jumpLastUpdate>2014-11-24 21:20:36</jumpLastUpdate>
+    <balance>393841512.13</balance>
     <attributeEnhancers>
-      <intelligenceBonus>
-        <augmentatorName>Cybernetic Subprocessor - Basic</augmentatorName>
-        <augmentatorValue>3</augmentatorValue>
-      </intelligenceBonus>
-      <willpowerBonus>
-        <augmentatorName>Neural Boost - Basic</augmentatorName>
-        <augmentatorValue>3</augmentatorValue>
-      </willpowerBonus>
-      <memoryBonus>
-        <augmentatorName>Memory Augmentation - Basic</augmentatorName>
-        <augmentatorValue>3</augmentatorValue>
-      </memoryBonus>
-      <perceptionBonus>
-        <augmentatorName>Ocular Filter - Basic</augmentatorName>
-        <augmentatorValue>3</augmentatorValue>
-      </perceptionBonus>
+      <deprecated explanation="This section of the character sheet has been deprecated. Please use the new implants section to get a characters current implants. Final removal of this section is scheduled for December 1st 2014. Thanks to kais58 and LuciaDenniard for pointing out how terrible I am at spelling. I hate you both." />
     </attributeEnhancers>
+    <rowset name="implants" key="typeID" columns="typeID,typeName" />
     <attributes>
-      <intelligence>27</intelligence>
-      <memory>21</memory>
+      <intelligence>17</intelligence>
+      <memory>17</memory>
       <charisma>17</charisma>
-      <perception>17</perception>
-      <willpower>17</willpower>
+      <perception>27</perception>
+      <willpower>21</willpower>
     </attributes>
     <rowset name="skills" key="typeID" columns="typeID,skillpoints,level,published">
       <row typeID="3300" skillpoints="1415" level="2" published="1" />
@@ -74,5 +81,5 @@
     <rowset name="corporationRolesAtOther" key="roleID" columns="roleID,roleName" />
     <rowset name="corporationTitles" key="titleID" columns="titleID,titleName" />
   </result>
-  <cachedUntil>2014-06-28 12:15:18</cachedUntil>
+  <cachedUntil>2014-12-02 16:12:31</cachedUntil>
 </eveapi>

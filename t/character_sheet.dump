@@ -1,4 +1,6 @@
 {
+          'home_station_id' => '60001804',
+          'jump_activation' => '2014-11-24 21:24:22',
           'skills' => {
                         '22578' => {
                                    'level' => '3',
@@ -105,42 +107,48 @@
                                   'skill_points' => '2829'
                                 }
                       },
-          'corporation_id' => '1000044',
-          'date_of_birth' => '2014-06-05 19:55:49',
-          'blood_line' => 'Civire',
-          'corporation_name' => 'School of Applied Knowledge',
-          'attribute_enhancers' => {
-                                     'memory' => {
-                                                 'value' => '3',
-                                                 'name' => 'Memory Augmentation - Basic'
-                                               },
-                                     'intelligence' => {
-                                                       'value' => '3',
-                                                       'name' => 'Cybernetic Subprocessor - Basic'
-                                                     },
-                                     'perception' => {
-                                                     'value' => '3',
-                                                     'name' => 'Ocular Filter - Basic'
-                                                   },
-                                     'willpower' => {
-                                                    'value' => '3',
-                                                    'name' => 'Neural Boost - Basic'
-                                                  }
-                                   },
+          'implants' => {},
+          'jump_fatigue' => '2014-11-24 21:58:18',
+          'jump_clone_implants' => {},
+          'corporation_id' => '928827408',
+          'free_skill_points' => '0',
+          'clone_jump_date' => '2014-11-28 16:13:39',
+          'date_of_birth' => '2011-06-25 20:50:00',
+          'blood_line' => 'Achura',
+          'corporation_name' => 'The First Foundation',
+          'attribute_enhancers' => {},
+          'clone_type_id' => '16715',
           'race' => 'Caldari',
-          'gender' => 'Female',
-          'cached_until' => '2014-06-28 12:15:18',
-          'name' => 'Milolika Muvila',
-          'clone_skill_points' => '2800000',
-          'character_id' => '94701913',
-          'ancestry' => 'Entrepreneurs',
-          'balance' => '21418322.39',
+          'free_respecs' => '1',
+          'gender' => 'Male',
+          'cached_until' => '2014-12-02 16:12:31',
+          'clone_skill_points' => '54600000',
+          'remote_station_date' => '0001-01-01 00:00:00',
+          'name' => 'Chips Merkaba',
+          'jump_clones' => {
+                             '20801559' => {
+                                           'type_id' => '164',
+                                           'location_id' => '60003043',
+                                           'clone_name' => ''
+                                         },
+                             '20069695' => {
+                                           'type_id' => '164',
+                                           'location_id' => '60011866',
+                                           'clone_name' => ''
+                                         }
+                           },
+          'character_id' => '90922771',
+          'ancestry' => 'Inventors',
+          'jump_last_update' => '2014-11-24 21:20:36',
+          'balance' => '393841512.13',
+          'last_respec_date' => '2014-04-03 15:03:06',
           'attributes' => {
-                            'memory' => '21',
-                            'intelligence' => '27',
-                            'perception' => '17',
+                            'memory' => '17',
+                            'intelligence' => '17',
+                            'perception' => '27',
                             'charisma' => '17',
-                            'willpower' => '17'
+                            'willpower' => '21'
                           },
-          'clone_name' => 'Clone Grade Delta'
+          'clone_name' => 'Clone Grade Pi',
+          'last_timed_respec' => '2014-04-03 15:03:06'
 }

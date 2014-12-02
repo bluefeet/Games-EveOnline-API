@@ -4,6 +4,7 @@ use strictures 1;
 use Test::More;
 
 {
+    use lib '/www/Games-EveOnline-API/lib';
     package Games::EveOnline::API::LocalTest;
     use Moo;
     extends 'Games::EveOnline::API';
@@ -52,6 +53,8 @@ my $feeds = [qw(
     character_ids
     station_list
     corporation_sheet
+    contracts
+    contract_items
 )];
 
 my $args = {
@@ -59,6 +62,7 @@ my $args = {
     'character_name'    => { ids => '90922771,94701913' },
     'character_ids'     => { names => 'Chips Merkaba, libzar, Krion'},
     'corporation_sheet' => { corporation_id => 1043735888 },
+    'contract_items'    => { contract_id => 87229270 },
 };
 
 foreach my $feed (@$feeds) {

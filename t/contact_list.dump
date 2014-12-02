@@ -28,5 +28,6 @@
                                          'in_watchlist' => undef,
                                          'contact_type_id' => '1383'
                                        }
-                          }
+                          },
+            'cached_until' => '2014-06-26 18:40:40',
         }

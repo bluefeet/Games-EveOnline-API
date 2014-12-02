@@ -653,7 +653,7 @@ sub character_info {
     };
 
     if ( defined $result->{rowset}->{row} ) {
-        foreach my $history_row ( @{$result->{rowset}->{row}} ) {
+        foreach my $history_row ( @{ $result->{rowset}->{row} } ) {
             $info->{employment_history}->{$history_row->{recordID}}->{record_id}      = $history_row->{recordID};
             $info->{employment_history}->{$history_row->{recordID}}->{corporation_id} = $history_row->{corporationID};
             $info->{employment_history}->{$history_row->{recordID}}->{start_date}     = $history_row->{startDate};
@@ -1132,6 +1132,164 @@ sub mail_lists {
     return $lists;
 }
 
+=head2 contracts
+
+  my $contracts = $eapi->contracts( character_id  => $character_id, contract_id => 12345 );
+  
+  contract_id is optional
+
+Returns a hashref with the following structure:
+    {
+        'cached_until' => '2014-12-02 15:01:44',
+        '87227770' => {
+          'date_completed' => '2014-11-02 19:23:40',
+          'start_station_id' => '60001039',
+          'issuer_id' => '90922771',
+          'status' => 'Completed',
+          'contract_id' => '87227770',
+          'num_days' => '14',
+          'availability' => 'Private',
+          'buyout' => '0.00',
+          'date_accepted' => '2014-11-02 18:56:38',
+          'for_corp' => '0',
+          'collateral' => '0.00',
+          'date_expired' => '2014-11-16 18:31:19',
+          'reward' => '0.00',
+          'volume' => '60472.7325',
+          'issue_corp_id' => '928827408',
+          'assignee_id' => '899660590',
+          'end_station_id' => '60003043',
+          'date_issued' => '2014-11-02 18:31:19',
+          'price' => '0.00',
+          'type' => 'Courier',
+          'title' => '',
+          'acceptor_id' => '899660590'
+        }
+    }
+
+=cut
+
+sub contracts {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') unless $character_id;
+
+    my $data = $self->_load_xml(
+        path          => 'char/Contracts.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+        contract_id   => $args{contract_id},
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return $self->_get_error( $data ) if defined $data->{error};
+
+    my $contracts;
+
+    foreach my $c_id ( keys %$result ) {
+        $contracts->{$c_id} = {
+            contract_id => $c_id,
+            issuer_id   => $result->{$c_id}->{issuerID},
+            issue_corp_id => $result->{$c_id}->{issuerCorpID},
+            assignee_id   => $result->{$c_id}->{assigneeID},
+            acceptor_id   => $result->{$c_id}->{acceptorID},
+            start_station_id => $result->{$c_id}->{startStationID},
+            end_station_id   => $result->{$c_id}->{endStationID},
+            type => $result->{$c_id}->{type},
+            status => $result->{$c_id}->{status},
+            title   => $result->{$c_id}->{title},
+            for_corp => $result->{$c_id}->{forCorp},
+            availability => $result->{$c_id}->{availability},
+            date_issued  => $result->{$c_id}->{dateIssued},
+            date_expired => $result->{$c_id}->{dateExpired},
+            date_accepted => $result->{$c_id}->{dateAccepted},
+            num_days => $result->{$c_id}->{numDays},
+            date_completed => $result->{$c_id}->{dateCompleted},
+            price => $result->{$c_id}->{price},
+            reward => $result->{$c_id}->{reward},
+            collateral => $result->{$c_id}->{collateral},
+            buyout => $result->{$c_id}->{buyout},
+            volume => $result->{$c_id}->{volume},
+        }
+    }
+
+    $contracts->{cached_until} = $data->{cachedUntil};
+  
+    return $contracts;
+
+}
+
+=head2 contract_items
+
+  my $contract_items = $eapi->contract_items( character_id  => $character_id, contract_id => 12345 );
+  
+  contract_id is necessary
+
+Returns a hashref with the following structure:
+{
+  'cached_until' => '2024-11-29 14:54:02',
+  '87229270' => [
+                  {
+                    'type_id' => '3082',
+                    'included' => '1',
+                    'quantity' => '1',
+                    'raw_quantity' => undef,
+                    'record_id' => '1457473349',
+                    'singleton' => '0'
+                  },
+                  {
+                    'type_id' => '3082',
+                    'included' => '1',
+                    'quantity' => '1',
+                    'raw_quantity' => undef,
+                    'record_id' => '1457473343',
+                    'singleton' => '0'
+                  },
+                ]
+}
+
+=cut
+
+sub contract_items {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id or contract_id specified') unless $character_id && $args{contract_id};
+
+    my $contract_id = $args{contract_id};
+
+    my $data = $self->_load_xml(
+        path          => 'char/ContractItems.xml.aspx',
+        requires_auth => 1,
+        character_id  => $character_id,
+        contract_id   => $contract_id,
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return $self->_get_error( $data ) if defined $data->{error};
+
+    my $contract;
+
+    foreach my $r_id ( keys %$result ) {
+        push @{$contract->{$contract_id}}, {
+            record_id    => $r_id,
+            type_id      => $result->{$r_id}->{typeID},
+            quantity     => $result->{$r_id}->{quantity},
+            raw_quantity => $result->{$r_id}->{rawQuantity},
+            singleton    => $result->{$r_id}->{singleton},
+            included     => $result->{$r_id}->{included},
+        }
+    }
+
+    $contract->{cached_until} = $data->{cachedUntil};
+  
+    return $contract;
+}
+
+
 =head2 character_name
 
   my $character_name = $eapi->character_name( ids => '90922771,94701913' );
@@ -1378,10 +1536,11 @@ sub _parse_assets {
 
 sub _load_xml {
     my $self = shift;
+    my %args = @_;
 
     my $xml = $self->_retrieve_xml( @_ );
 
-    my $data = $self->_parse_xml( $xml );
+    my $data = $self->_parse_xml( $xml, $args{path} );
     die('Unsupported EveOnline API XML version (requires version 2)') if ($data->{version} != 2);
 
     return $data;
@@ -1420,6 +1579,9 @@ sub _retrieve_xml {
     if ($args{corporation_id}) {
         $params->{corporationID} = $args{corporation_id};
     }
+    if ($args{contract_id}) {
+        $params->{contractID} = $args{contract_id};
+    }
 
     my $uri = URI->new( $self->api_url() . '/' . $args{path} );
     $uri->query_form( $params );
@@ -1431,16 +1593,23 @@ sub _retrieve_xml {
 }
 
 sub _parse_xml {
-    my ($self, $xml) = @_;
+    my ($self, $xml, $path) = @_;
 
     # XML::Simple is not recomended for parse XML cause combined attrs like jumpCloneID and typeID 
     # in response for char/CharacterSheet (node jumpCloneImplants) are croped
-    # XML::Simple to XML::LibXML or delete KeyAttr parameters and refactor all code and tests
+    # TODO: XML::Simple -> XML::LibXML or delete KeyAttr parameters and refactor all code and tests
+    my $key_attr = ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'jumpCloneID', 'typeID', 'stationID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID', 'contractID'];
+
+    if ( $path eq 'char/ContractItems.xml.aspx' ) {
+      # One more reason to kill XML::Simple
+      $key_attr = ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'jumpCloneID', 'recordID', 'typeID', 'stationID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID', 'contractID'];
+    }
+
 
     my $data = XML::Simple::XMLin(
         $xml,
         ForceArray => ['row'],
-        KeyAttr    => ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'jumpCloneID', 'typeID', 'stationID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID'],
+        KeyAttr    => $key_attr,
     );
 
     return $data;
