@@ -4,7 +4,6 @@ use strictures 1;
 use Test::More;
 
 {
-    use lib '/www/Games-EveOnline-API/lib';
     package Games::EveOnline::API::LocalTest;
     use Moo;
     extends 'Games::EveOnline::API';
