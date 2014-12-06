@@ -369,9 +369,9 @@ sub character_sheet {
         date_of_birth       => $result->{DoB},
         ancestry            => $result->{ancestry},
         gender              => $result->{gender},
-        clone_type_id       => $result->{cloneTypeID},
-        clone_name          => $result->{cloneName},
-        clone_skill_points  => $result->{cloneSkillPoints},
+        clone_type_id       => undef, # deleted in Rhea
+        clone_name          => undef, # deleted in Rhea
+        clone_skill_points  => undef, # deleted in Rhea
         clone_jump_date     => $result->{cloneJumpDate},
         free_skill_points   => $result->{freeSkillPoints},
         free_respecs        => $result->{freeRespecs},

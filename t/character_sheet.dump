@@ -117,12 +117,10 @@
           'blood_line' => 'Achura',
           'corporation_name' => 'The First Foundation',
           'attribute_enhancers' => {},
-          'clone_type_id' => '16715',
           'race' => 'Caldari',
           'free_respecs' => '1',
           'gender' => 'Male',
           'cached_until' => '2014-12-02 16:12:31',
-          'clone_skill_points' => '54600000',
           'remote_station_date' => '0001-01-01 00:00:00',
           'name' => 'Chips Merkaba',
           'jump_clones' => {
@@ -149,6 +147,5 @@
                             'charisma' => '17',
                             'willpower' => '21'
                           },
-          'clone_name' => 'Clone Grade Pi',
           'last_timed_respec' => '2014-04-03 15:03:06'
 }
