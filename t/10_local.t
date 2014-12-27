@@ -6,6 +6,7 @@ use Test::More;
 {
     package Games::EveOnline::API::LocalTest;
     use Moo;
+    use lib '/www/Games-EveOnline-API/lib';
     extends 'Games::EveOnline::API';
 
     sub _retrieve_xml {
