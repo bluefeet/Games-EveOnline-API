@@ -49,6 +49,7 @@ use Types::Standard qw( Int Str );
 use URI;
 use LWP::UserAgent qw();
 use XML::Simple qw();
+use XML::LibXML;
 use Carp qw( croak );
 
 =head1 ARGUMENTS
@@ -124,38 +125,46 @@ sub skill_tree {
 
     my $result = {};
 
-    return $self->_get_error( $data ) if defined $data->{error};
+    foreach my $row ($data->findnodes('/eveapi/result/rowset[@name = "skillGroups"]/row')) {
+        my $group_id = $row->getAttribute('groupID');
+        my $group_result = {};
+        $group_result->{$group_id}->{name} = $row->getAttribute('groupName');
+        $group_result->{$group_id}->{skills} = {};
 
-    my $group_rows = $data->{result}->{rowset}->{row};
-    foreach my $group_id (keys %$group_rows) {
-        my $group_result = $result->{$group_id} ||= {};
-        $group_result->{name} = $group_rows->{$group_id}->{groupName};
+        my $skill_rows;
+        foreach my $skill ( $row->findnodes( './rowset[@name = "skills"]/row' ) ) {
+            my $skill_id = $skill->getAttribute('typeID');
+            my $skill_result = {};
 
-        $group_result->{skills} = {};
-        my $skill_rows = $group_rows->{$group_id}->{rowset}->{row};
-        foreach my $skill_id (keys %$skill_rows) {
-            my $skill_result = $group_result->{skills}->{$skill_id} ||= {};
-            $skill_result->{name}                = $skill_rows->{$skill_id}->{typeName};
-            $skill_result->{description}         = $skill_rows->{$skill_id}->{description};
-            $skill_result->{rank}                = $skill_rows->{$skill_id}->{rank};
-            $skill_result->{primary_attribute}   = $skill_rows->{$skill_id}->{requiredAttributes}->{primaryAttribute};
-            $skill_result->{secondary_attribute} = $skill_rows->{$skill_id}->{requiredAttributes}->{secondaryAttribute};
+            $skill_result->{name}                = $skill->getAttribute('typeName');
+            $skill_result->{description}         = $skill->findnodes('./description')->to_literal->value();
+            $skill_result->{rank}                = $skill->findnodes('./rank')->to_literal->value();
+            $skill_result->{primary_attribute}   = $skill->findnodes('./requiredAttributes/primaryAttribute')->to_literal->value();
+            $skill_result->{secondary_attribute} = $skill->findnodes('./requiredAttributes/secondaryAttribute')->to_literal->value();
 
             $skill_result->{bonuses} = {};
-            my $bonus_rows = $skill_rows->{$skill_id}->{rowset}->{skillBonusCollection}->{row};
-            foreach my $bonus_name (keys %$bonus_rows) {
-                $skill_result->{bonuses}->{$bonus_name} = $bonus_rows->{$bonus_name}->{bonusValue};
+            foreach my $bonus ( $skill->findnodes("./rowset[\@name = 'skillBonusCollection']/row") ) {
+                $skill_result->{bonuses}->{ $bonus->getAttribute('bonusType') } = $bonus->getAttribute('bonusValue');
             }
 
             $skill_result->{required_skills} = {};
-            my $required_skill_rows = $skill_rows->{$skill_id}->{rowset}->{requiredSkills}->{row};
-            foreach my $required_skill_id (keys %$required_skill_rows) {
-                $skill_result->{required_skills}->{$required_skill_id} = $required_skill_rows->{$required_skill_id}->{skillLevel};
+            foreach my $required_skill ( $skill->findnodes("./rowset[\@name = 'requiredSkills']/row") ) {
+                $skill_result->{required_skills}->{ $required_skill->getAttribute('typeID') } = $required_skill->getAttribute('skillLevel');
+            }
+            $group_result->{$group_id}->{skills}->{$skill_id} = $skill_result;
+        }
+
+        # More elegant solution?
+        foreach my $group_key ( keys %$group_result ) {
+            foreach my $skill_id ( keys %{ $group_result->{$group_key}->{skills} } ) {
+                next if exists $result->{$group_key}->{skills}->{$skill_id};
+                $result->{$group_id}->{name} = $group_result->{$group_key}->{name};
+                $result->{$group_id}->{skills}->{$skill_id} = $group_result->{$group_key}->{skills}->{$skill_id};
             }
         }
     }
 
-    $result->{cached_until} = $data->{cachedUntil};
+    $result->{cached_until} = $data->findnodes('/eveapi/cachedUntil')->to_literal->value();
 
     return $result;
 }
@@ -1541,8 +1550,10 @@ sub _load_xml {
     my $xml = $self->_retrieve_xml( @_ );
 
     my $data = $self->_parse_xml( $xml, $args{path} );
-    die('Unsupported EveOnline API XML version (requires version 2)') if ($data->{version} != 2);
 
+    if ( $args{path} ne 'eve/SkillTree.xml.aspx' ) {
+      die('Unsupported EveOnline API XML version (requires version 2)') if ($data->{version} != 2);
+    }
     return $data;
 }
 
@@ -1595,6 +1606,7 @@ sub _retrieve_xml {
 sub _parse_xml {
     my ($self, $xml, $path) = @_;
 
+    my $data;
     # XML::Simple is not recomended for parse XML cause combined attrs like jumpCloneID and typeID 
     # in response for char/CharacterSheet (node jumpCloneImplants) are croped
     # TODO: XML::Simple -> XML::LibXML or delete KeyAttr parameters and refactor all code and tests
@@ -1604,13 +1616,19 @@ sub _parse_xml {
       # One more reason to kill XML::Simple
       $key_attr = ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'jumpCloneID', 'recordID', 'typeID', 'stationID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID', 'contractID'];
     }
-
-
-    my $data = XML::Simple::XMLin(
-        $xml,
-        ForceArray => ['row'],
-        KeyAttr    => $key_attr,
-    );
+    
+    if ( $path eq 'eve/SkillTree.xml.aspx' ) {
+        # For https://github.com/bluefeet/Games-EveOnline-API/issues/5
+        # TODO: rewrite to XML::LibXML all methods
+        $data = XML::LibXML->load_xml( string => $xml ); 
+    }
+    else {
+      $data = XML::Simple::XMLin(
+          $xml,
+          ForceArray => ['row'],
+          KeyAttr    => $key_attr,
+      );
+    }
 
     return $data;
 }
