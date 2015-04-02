@@ -2,51 +2,43 @@
           'cached_until' => '2025-01-21 12:20:02',
           '87229270' => [
                           {
-                            'type_id' => '3082',
+                            'type_id' => '2032',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473349',
+                            'record_id' => '1457473307',
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '3082',
+                            'type_id' => '5975',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473343',
+                            'record_id' => '1457473309',
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '527',
+                            'type_id' => '22291',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473339',
+                            'record_id' => '1457473304',
                             'singleton' => '0'
                           },
                           {
                             'type_id' => '2488',
                             'included' => '1',
-                            'quantity' => '1',
+                            'quantity' => '2',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473333',
+                            'record_id' => '1457473302',
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '23707',
+                            'type_id' => '2404',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473327',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '29011',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473356',
+                            'record_id' => '1457473297',
                             'singleton' => '0'
                           },
                           {
@@ -55,14 +47,6 @@
                             'quantity' => '1265',
                             'raw_quantity' => undef,
                             'record_id' => '1457473294',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '16471',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473341',
                             'singleton' => '0'
                           },
                           {
@@ -82,22 +66,6 @@
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '23707',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473328',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '28668',
-                            'included' => '1',
-                            'quantity' => '50',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473325',
-                            'singleton' => '0'
-                          },
-                          {
                             'type_id' => '28668',
                             'included' => '1',
                             'quantity' => '50',
@@ -114,19 +82,11 @@
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '10190',
+                            'type_id' => '22291',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473340',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '23025',
-                            'included' => '1',
-                            'quantity' => '3445',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473337',
+                            'record_id' => '1457473306',
                             'singleton' => '0'
                           },
                           {
@@ -138,158 +98,6 @@
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '31718',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473287',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '10190',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473342',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2404',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473303',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '3082',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473345',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '23029',
-                            'included' => '1',
-                            'quantity' => '2675',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473330',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2488',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473329',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2488',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473331',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '3082',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473351',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2281',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473300',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '27361',
-                            'included' => '1',
-                            'quantity' => '1000',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473288',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2048',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473298',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2281',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473316',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '5975',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473309',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2281',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473313',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2185',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473361',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2488',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473336',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '23707',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473324',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '33474',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473360',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2185',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473357',
-                            'singleton' => '0'
-                          },
-                          {
                             'type_id' => '22291',
                             'included' => '1',
                             'quantity' => '1',
@@ -298,131 +106,11 @@
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '1952',
+                            'type_id' => '31718',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473338',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '1447',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473312',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2605',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473348',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '8585',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473323',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '28668',
-                            'included' => '1',
-                            'quantity' => '63',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473358',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2404',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473301',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '23711',
-                            'included' => '1',
-                            'quantity' => '5',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473308',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '31790',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473352',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '8585',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473320',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2404',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473299',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '5975',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473293',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '5975',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473362',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2032',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473307',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2185',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473363',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2404',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473297',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '14248',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473364',
+                            'record_id' => '1457473287',
                             'singleton' => '0'
                           },
                           {
@@ -442,11 +130,19 @@
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '2048',
+                            'type_id' => '621',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473366',
+                            'record_id' => '1457473282',
+                            'singleton' => '0'
+                          },
+                          {
+                            'type_id' => '2404',
+                            'included' => '1',
+                            'quantity' => '1',
+                            'raw_quantity' => undef,
+                            'record_id' => '1457473303',
                             'singleton' => '0'
                           },
                           {
@@ -458,35 +154,27 @@
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '23707',
+                            'type_id' => '2048',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473321',
+                            'record_id' => '1457473311',
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '2185',
+                            'type_id' => '23711',
                             'included' => '1',
-                            'quantity' => '1',
+                            'quantity' => '5',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473359',
+                            'record_id' => '1457473308',
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '2281',
+                            'type_id' => '2404',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473353',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2605',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473346',
+                            'record_id' => '1457473301',
                             'singleton' => '0'
                           },
                           {
@@ -498,35 +186,43 @@
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '31790',
+                            'type_id' => '3841',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473350',
+                            'record_id' => '1457473290',
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '2488',
+                            'type_id' => '2404',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473365',
+                            'record_id' => '1457473299',
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '31790',
+                            'type_id' => '2281',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473354',
+                            'record_id' => '1457473300',
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '31790',
+                            'type_id' => '5975',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473317',
+                            'record_id' => '1457473293',
+                            'singleton' => '0'
+                          },
+                          {
+                            'type_id' => '27361',
+                            'included' => '1',
+                            'quantity' => '1000',
+                            'raw_quantity' => undef,
+                            'record_id' => '1457473288',
                             'singleton' => '0'
                           },
                           {
@@ -538,155 +234,11 @@
                             'singleton' => '0'
                           },
                           {
-                            'type_id' => '4405',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473344',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '31790',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473322',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '22291',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473304',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '31790',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473319',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2488',
-                            'included' => '1',
-                            'quantity' => '2',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473302',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '8585',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473326',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '1447',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473314',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '3888',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473318',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2185',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473334',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '22291',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473306',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '3841',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473315',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2488',
-                            'included' => '1',
-                            'quantity' => '5',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473367',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '2185',
-                            'included' => '1',
-                            'quantity' => '5',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473355',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '621',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473282',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '23037',
-                            'included' => '1',
-                            'quantity' => '1400',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473332',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '3841',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473335',
-                            'singleton' => '0'
-                          },
-                          {
                             'type_id' => '2048',
                             'included' => '1',
                             'quantity' => '1',
                             'raw_quantity' => undef,
-                            'record_id' => '1457473311',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '3841',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473290',
-                            'singleton' => '0'
-                          },
-                          {
-                            'type_id' => '3082',
-                            'included' => '1',
-                            'quantity' => '1',
-                            'raw_quantity' => undef,
-                            'record_id' => '1457473347',
+                            'record_id' => '1457473298',
                             'singleton' => '0'
                           }
                         ]

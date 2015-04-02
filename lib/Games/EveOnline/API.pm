@@ -1294,7 +1294,7 @@ sub contract_items {
     }
 
     $contract->{cached_until} = $data->{cachedUntil};
-  
+
     return $contract;
 }
 
