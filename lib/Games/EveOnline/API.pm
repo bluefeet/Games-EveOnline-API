@@ -1141,6 +1141,125 @@ sub mail_lists {
     return $lists;
 }
 
+=head2 starbase_list
+
+  my $starbase_list = $eapi->starbase_list();
+
+=cut
+
+sub starbase_list {
+    my ($self) = @_;
+
+    my $data = $self->_load_xml(
+        path          => 'corp/StarbaseList.xml.aspx',
+        requires_auth => 1,
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return $self->_get_error( $data ) if defined $data->{error};
+
+    my $lists;
+    foreach my $list_id ( keys %$result ) {
+        $lists->{$list_id} = $result->{$list_id};
+    }
+
+    $lists->{cached_until} = $data->{cachedUntil};
+  
+    return $lists;
+}
+
+
+=head2 starbase_detail
+
+  my $starbase_detail = $eapi->starbase_detail( item_id => 111111 );
+
+  Result:
+
+   {
+      'fuel' => [
+                  {
+                    'type_id' => '4247',
+                    'quantity' => '7340'
+                  },
+                  {
+                    'type_id' => '16275',
+                    'quantity' => '8333'
+                  }
+                ],
+      'combat_settings' => {
+                             'on_status_drop_standing' => '0',
+                             'on_corporation_war' => '0',
+                             'on_aggression' => '0',
+                             'on_status_drop_enabled' => '0',
+                             'on_standing_drop' => '0',
+                             'use_standings_from' => '928827408'
+                           },
+      'cached_until' => '2016-02-11 18:44:29',
+      'general_settings' => {
+                              'allow_corporation_members' => '1',
+                              'allow_alliance_members' => '1',
+                              'usage_flags' => '3',
+                              'deploy_flags' => '0'
+                            },
+      'online_timestamp' => '2015-06-10 07:22:30',
+      'state_timestamp' => '2016-02-11 18:26:43',
+      'state' => '4'
+    }
+
+=cut
+
+sub starbase_detail {
+    my ($self, %args) = @_;
+
+    my $item_id = $args{item_id};
+    croak('No item_id specified') unless $item_id;
+
+    my $data = $self->_load_xml(
+        path          => 'corp/StarbaseDetail.xml.aspx',
+        requires_auth => 1,
+        item_id       => $item_id,
+    );
+
+    my $result = $data->{result};
+
+    return $self->_get_error( $data ) if defined $data->{error};
+
+    my $details;
+
+    $details = {
+        state            => $result->{state},
+        state_timestamp  => $result->{stateTimestamp},
+        online_timestamp => $result->{onlineTimestamp},
+        general_settings => {
+            usage_flags  => $result->{generalSettings}->{usageFlags},
+            deploy_flags => $result->{generalSettings}->{deployFlags},
+            allow_corporation_members => $result->{generalSettings}->{allowCorporationMembers},
+            allow_alliance_members    => $result->{generalSettings}->{allowAllianceMembers},
+        },
+        combat_settings => {
+            use_standings_from => $result->{combatSettings}->{useStandingsFrom}->{ownerID},
+            on_standing_drop => $result->{combatSettings}->{onStandingDrop}->{standing},
+            on_status_drop_enabled => $result->{combatSettings}->{onStatusDrop}->{enabled},
+            on_status_drop_standing => $result->{combatSettings}->{onStatusDrop}->{standing},
+            on_aggression => $result->{combatSettings}->{onAggression}->{enabled},
+            on_corporation_war => $result->{combatSettings}->{onCorporationWar}->{enabled},
+        },
+        fuel => [],
+    };
+
+    foreach my $fuel ( keys %{ $result->{rowset}->{row} } ) {
+        push @{ $details->{fuel} }, 
+            { type_id  => $fuel, 
+              quantity => $result->{rowset}->{row}->{$fuel}->{quantity} };
+    }
+
+
+    $details->{cached_until} = $data->{cachedUntil};
+  
+    return $details;
+}
+
 =head2 contracts
 
   my $contracts = $eapi->contracts( character_id  => $character_id, contract_id => 12345 );
@@ -1592,6 +1711,9 @@ sub _retrieve_xml {
     }
     if ($args{contract_id}) {
         $params->{contractID} = $args{contract_id};
+    }
+    if ($args{item_id}) {
+        $params->{itemID} = $args{item_id};
     }
 
     my $uri = URI->new( $self->api_url() . '/' . $args{path} );
