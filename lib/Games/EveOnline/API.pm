@@ -730,6 +730,72 @@ sub asset_list {
     return $self->_parse_assets( $result );
 }
 
+
+sub industry_jobs {
+    my ($self, %args) = @_;
+
+    my $character_id = $args{character_id} || $self->character_id();
+    croak('No character_id specified') if ! $character_id && $args{type} && $args{type} ne 'corp';
+
+    my $type = $args{type} && $args{type} eq 'corp' ? 'corp' : 'char';
+
+    my $data = $self->_load_xml(
+        path          => "$type/IndustryJobs".($args{history} || '').".xml.aspx",
+        requires_auth => 1,
+        character_id  => $type eq 'char' ? $character_id : undef,
+    );
+
+    my $result = $data->{result}->{rowset}->{row};
+
+    return $self->_get_error( $data ) if defined $data->{error};
+
+    my $jobs;
+
+    foreach my $job_id ( keys %$result ) {
+        
+        $jobs->{$job_id} = {
+            job_id                  => $job_id,
+            installer_id            => $result->{$job_id}->{installerID},
+            installer_name          => $result->{$job_id}->{installerName},
+            facility_id             => $result->{$job_id}->{facilityID},
+            solar_system_id         => $result->{$job_id}->{solarSystemID},
+            solar_system_name       => $result->{$job_id}->{solarSystemName},
+            station_id              => $result->{$job_id}->{stationID},
+            activity_id             => $result->{$job_id}->{activityID},
+            blueprint_id            => $result->{$job_id}->{blueprintID},
+            blueprint_type_id       => $result->{$job_id}->{blueprintTypeID},
+            blueprint_type_name     => $result->{$job_id}->{blueprintTypeName},
+            blueprint_location_id   => $result->{$job_id}->{blueprintLocationID},
+            output_location_id      => $result->{$job_id}->{outputLocationID},
+            runs                    => $result->{$job_id}->{runs},
+            cost                    => $result->{$job_id}->{cost},
+            team_id                 => $result->{$job_id}->{teamID},
+            licensed_runs           => $result->{$job_id}->{licensedRuns},
+            probability             => $result->{$job_id}->{probability},
+            product_type_id         => $result->{$job_id}->{productTypeID},
+            product_type_name       => $result->{$job_id}->{productTypeName},
+            status                  => $result->{$job_id}->{status},
+            time_in_seconds         => $result->{$job_id}->{timeInSeconds},
+            start_date              => $result->{$job_id}->{startDate},
+            end_date                => $result->{$job_id}->{endDate},
+            pause_date              => $result->{$job_id}->{pauseDate},
+            completed_date          => $result->{$job_id}->{completedDate},
+            completed_character_id  => $result->{$job_id}->{completedCharacterID},
+            successful_runs         => $result->{$job_id}->{successfulRuns},
+        };
+    }
+
+    $jobs->{cached_until} = $result->{cachedUntil};
+    return $jobs;
+
+}
+
+sub industry_jobs_history {
+    my ($self, %args) = @_;
+
+    return $self->industry_jobs(%args, history=>'History');
+}
+
 =head2 contact_list
 
   my $contact_list = $eapi->contact_list( character_id  => $character_id );
@@ -1715,6 +1781,9 @@ sub _retrieve_xml {
     if ($args{item_id}) {
         $params->{itemID} = $args{item_id};
     }
+    if ($args{job_id}) {
+        $params->{jobID} = $args{job_id};
+    }
 
     my $uri = URI->new( $self->api_url() . '/' . $args{path} );
     $uri->query_form( $params );
@@ -1732,11 +1801,11 @@ sub _parse_xml {
     # XML::Simple is not recomended for parse XML cause combined attrs like jumpCloneID and typeID 
     # in response for char/CharacterSheet (node jumpCloneImplants) are croped
     # TODO: XML::Simple -> XML::LibXML or delete KeyAttr parameters and refactor all code and tests
-    my $key_attr = ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'jumpCloneID', 'typeID', 'stationID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID', 'contractID'];
+    my $key_attr = ['jobID', 'characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'jumpCloneID', 'typeID', 'stationID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID', 'contractID'];
 
     if ( $path eq 'char/ContractItems.xml.aspx' ) {
       # One more reason to kill XML::Simple
-      $key_attr = ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'jumpCloneID', 'recordID', 'typeID', 'stationID', 'bonusType', 'groupID', 'refTypeID', 'solarSystemID', 'name', 'contactID', 'contractID'];
+      $key_attr = ['characterID', 'listID', 'messageID', 'transactionID', 'refID', 'itemID', 'jumpCloneID', 'recordID', 'typeID', 'stationID', 'bonusType', 'groupID', 'refTypeID',  'jobID', 'solarSystemID', 'name', 'contactID', 'contractID'];
     }
     
     if ( $path eq 'eve/SkillTree.xml.aspx' ) {

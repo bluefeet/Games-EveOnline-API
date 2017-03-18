@@ -2,6 +2,10 @@ Revision history for Perl extension Games::EveOnline::API.
 
 {{$NEXT}}
 
+0.14      2017-03-18
+ -  Add industry_jobs, industry_jobs_history functions (chipsoid)
+
+
 0.13      2014-08-24
  -  Add corporation_sheet function (chipsoid)
  -  Fix tests for wallet transactions (chipsoid)
