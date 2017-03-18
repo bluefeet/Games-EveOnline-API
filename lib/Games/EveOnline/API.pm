@@ -785,7 +785,7 @@ sub industry_jobs {
         };
     }
 
-    $jobs->{cached_until} = $result->{cachedUntil};
+    $jobs->{cached_until} = $data->{cachedUntil};
     return $jobs;
 
 }
