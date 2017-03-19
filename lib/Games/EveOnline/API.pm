@@ -715,12 +715,14 @@ sub asset_list {
     my ($self, %args) = @_;
 
     my $character_id = $args{character_id} || $self->character_id();
-    croak('No character_id specified') unless $character_id;
+    croak('No character_id specified') if ! $character_id && $args{type} && $args{type} ne 'corp';
+
+    my $type = $args{type} && $args{type} eq 'corp' ? 'corp' : 'char';
 
     my $data = $self->_load_xml(
-        path          => 'char/AssetList.xml.aspx',
+        path          => $type.'/AssetList.xml.aspx',
         requires_auth => 1,
-        character_id  => $character_id,
+        character_id  => $type eq 'char' ? $character_id : undef,
     );
 
     my $result = $data->{result};
@@ -1713,7 +1715,7 @@ sub _parse_assets {
 
     foreach my $id ( keys %$rows ) {
         $parsed->{$id}->{item_id}      = $id;
-        $parsed->{$id}->{location_id}  = $rows->{$id}->{locationID} if $rows->{$id}->{locationID};
+        $parsed->{$id}->{location_id}  = $rows->{$id}->{locationID} || 0;
         $parsed->{$id}->{raw_quantity} = $rows->{$id}->{rawQuantity};
         $parsed->{$id}->{quantity}     = $rows->{$id}->{quantity};
         $parsed->{$id}->{flag}         = $rows->{$id}->{flag};
