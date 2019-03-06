@@ -1,10 +1,8 @@
-=pod
+# NAME
 
-=head1 NAME
+Games::EveOnline::API - A simple Perl wrapper around the EveOnline XML API. (DEPRECATED)
 
-Games::EveOnline::API - A simple Perl wrapper around the EveOnline XML API.
-
-=head1 SYNOPSIS
+# SYNOPSIS
 
     use Games::EveOnline::API;
     my $eapi = Games::EveOnline::API->new();
@@ -20,7 +18,11 @@ Games::EveOnline::API - A simple Perl wrapper around the EveOnline XML API.
     my $sheet       = $eapi->character_sheet( character_id => $character_id );
     my $in_training = $eapi->skill_in_training( character_id => $character_id );
 
-=head1 DESCRIPTION
+# DEPRECATED
+
+This module is no longer being maintained as the XML API is no more.
+
+# DESCRIPTION
 
 This module provides a Perl wrapper around the Eve-Online API, version 2.
 The need for the wrapper arrises for two reasons.  First, the XML that
@@ -29,11 +31,11 @@ than just returning you a perl data representation of the XML, it also
 simplifies the results.
 
 Only a couple of the methods provided by this module can be used straight
-away.  The rest require that you get a user_id (keyID) and api_key (vCode).
+away.  The rest require that you get a user\_id (keyID) and api\_key (vCode).
 
-=head1 A NOTE ON CACHING
+# A NOTE ON CACHING
 
-Most of these methods return a 'cached_until' value.  I've no clue if this
+Most of these methods return a 'cached\_until' value.  I've no clue if this
 is CCP telling you how long you should cache the information before you
 should request it again, or if this is the point at which CCP will refresh
 their cache of this information.
@@ -41,39 +43,39 @@ their cache of this information.
 Either way, it is good etiquet to follow the cacheing guidelines of a
 provider.  If you over-use the API I'm sure you'll eventually get blocked.
 
-=head1 ARGUMENTS
+# ARGUMENTS
 
-=head2 user_id
+## user\_id
 
 An Eve Online API user ID (also known as a keyID).
 
-=head2 api_key
+## api\_key
 
 The key, as provided Eve Online, to access the API (also known
 as a vCode).
 
-=head2 character_id
+## character\_id
 
-Set the default C<character_id>.  Any methods that require
+Set the default `character_id`.  Any methods that require
 a characte ID, and are not given one, will use this one.
 
-=head2 api_url
+## api\_url
 
 The URL that will be used to access the Eve Online API.
-Defaults to L<https://api.eveonline.com>.  Normally you
+Defaults to [https://api.eveonline.com](https://api.eveonline.com).  Normally you
 won't want to change this.
 
-=head2 ua
+## ua
 
-The underlying L<LWP::UserAgent> object.  Default to a new one
+The underlying [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent) object.  Default to a new one
 with no special arguments.  Override this if you want to, for
 example, enable keepalive or an HTTP proxy.
 
-=head1 ANONYMOUS METHODS
+# ANONYMOUS METHODS
 
 These methods may be called anonymously, without authentication.
 
-=head2 skill_tree
+## skill\_tree
 
     my $skill_groups = $eapi->skill_tree();
 
@@ -102,7 +104,7 @@ The data structure is:
         }
     }
 
-=head2 ref_types
+## ref\_types
 
     my $ref_types = $eapi->ref_types();
 
@@ -111,7 +113,7 @@ various financial transaction types.  This is useful when pulling
 wallet information. The key of the hash is the ref type's ID, and
 the value of the title of the ref type.
 
-=head2 sovereignty
+## sovereignty
 
     my $systems = $eapi->sovereignty();
 
@@ -124,12 +126,12 @@ value is a hashref with the keys:
     constellation_sovereignty
     alliance_id
 
-=head1 RESTRICTED METHODS
+# RESTRICTED METHODS
 
 These methods require authentication to use, so you must have set
-the L</user_id> and L</api_key> arguments to use them.
+the ["user\_id"](#user_id) and ["api\_key"](#api_key) arguments to use them.
 
-=head2 characters
+## characters
 
     my $characters = $eapi->characters();
 
@@ -145,7 +147,7 @@ Here's a sample:
         }
     }
 
-=head2 character_sheet
+## character\_sheet
 
     my $sheet = $eapi->character_sheet( character_id => $character_id );
 
@@ -188,7 +190,7 @@ a sample:
         }
     }
 
-=head2 skill_in_training
+## skill\_in\_training
 
     my $in_training = $eapi->skill_in_training( character_id => $character_id );
 
@@ -207,7 +209,7 @@ Returns a hashref with the following structure:
         'end_sp'     => '256000'
     }
 
-=head2 api_key_info
+## api\_key\_info
 
     my $api_info = $eapi->api_key_info();
 
@@ -240,7 +242,7 @@ Returns a hashref with the following structure:
         'expires' => ''
     }
 
-=head2 account_status
+## account\_status
 
     my $account_status = $eapi->account_status();
 
@@ -254,7 +256,7 @@ Returns a hashref with the following structure:
         'paid_until'    => '2014-08-26 16:37:43'
     }
 
-=head2 character_info
+## character\_info
 
     my $character_info = $eapi->character_info( character_id => $character_id );
 
@@ -293,7 +295,7 @@ Returns a hashref with the following structure:
         'ship_name'           => 'Char Name Capsule'
     }
 
-=head2 asset_list
+## asset\_list
 
     my $asset_list = $eapi->asset_list( character_id => $character_id );
 
@@ -330,7 +332,7 @@ Returns a hashref with the following structure:
         }
     }
 
-=head2 contact_list
+## contact\_list
 
     my $contact_list = $eapi->contact_list( character_id  => $character_id );
 
@@ -362,7 +364,7 @@ Returns a hashref with the following structure:
         }
     }
 
-=head2 wallet_transactions
+## wallet\_transactions
 
     my $wallet_transactions = $eapi->wallet_transactions(
         character_id => $character_id,
@@ -404,7 +406,7 @@ Returns a hashref with the following structure:
         }
     }
 
-=head2 wallet_journal
+## wallet\_journal
 
     my $wallet_journal = $eapi->wallet_journal(
         character_id => $character_id,
@@ -450,7 +452,7 @@ Returns a hashref with the following structure:
         }
     }
 
-=head2 mail_messages
+## mail\_messages
 
     my $mail_messages = $eapi->mail_messages( character_id => $character_id );
 
@@ -481,7 +483,7 @@ Returns a hashref with the following structure:
         'cached_until' => '2014-07-10 18:33:59'
     }
 
-=head2 mail_bodies
+## mail\_bodies
 
     my $mail_bodies = $eapi->mail_bodies( character_id  => $character_id, ids => $ids );
 
@@ -494,7 +496,7 @@ Returns a hashref with the following structure:
             "<font size=\"12\" color=\"#bfffffff\"></font><font size=\"12\" color=\"#fff7931e\"><a href=\"contract:30004977//73497683\">[Multiple Items]</a></font>"
     }
 
-=head2 mail_lists
+## mail\_lists
 
     my $mail_lists = $eapi->mail_lists( character_id  => $character_id );
 
@@ -505,7 +507,7 @@ Returns a hashref with the following structure:
         '145156367'    => 'RAISA Shield Fits'
     }
 
-=head2 character_name
+## character\_name
 
     my $character_name = $eapi->character_name( ids => '90922771,94701913' );
 
@@ -517,7 +519,7 @@ Returns a hashref with the following structure:
         '90922771'     => 'Chips Merkaba'
     }
 
-=head2 character_ids
+## character\_ids
 
     my $character_ids = $eapi->character_ids( names => 'Milolika Muvila,Chips Merkaba' );
 
@@ -529,7 +531,7 @@ Returns a hashref with the following structure:
         '90922771'     => 'Chips Merkaba'
     }
 
-=head2 station_list
+## station\_list
 
     my $station_list = $eapi->station_list();
 
@@ -554,7 +556,7 @@ Returns a hashref with the following structure:
         }
     }
 
-=head2 corporation_sheet
+## corporation\_sheet
 
     my $station_list = $eapi->corporation_sheet();
 
@@ -587,33 +589,16 @@ Returns a hashref with the following structure:
         'station_name' => 'Lasleinur V - Moon 11 - Republic Fleet Assembly Plant'
     }
 
-=head1 SEE ALSO
+# SEE ALSO
 
-=over
+- [WebService::EveOnline](https://metacpan.org/pod/WebService::EveOnline)
 
-=item *
+# AUTHORS
 
-L<WebService::EveOnline>
+    Aran Clary Deltac <bluefeet@gmail.com>
+    Andrey Chips Kuzmin <chipsoid@cpan.org>
 
-=back
-
-=head1 AUTHOR
-
-Aran Clary Deltac <bluefeet@gmail.com>
-
-=head1 CONTRIBUTORS
-
-=over
-
-=item *
-
-Andrey Chips Kuzmin <chipsoid@cpan.org>
-
-=back
-
-=head1 LICENSE
+# LICENSE
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
-
-=cut
