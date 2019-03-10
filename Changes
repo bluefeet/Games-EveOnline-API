@@ -2,6 +2,8 @@ Revision history for Perl extension Games-EveOnline-API.
 
 {{$NEXT}}
 
+0.10 2019-03-10T13:59:45Z
+
  - Declare URI dep.
 
 0.09 2019-03-10T12:09:07Z
