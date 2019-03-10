@@ -1457,6 +1457,7 @@ L<WebService::EveOnline>
 
     Aran Clary Deltac <bluefeet@gmail.com>
     Andrey Chips Kuzmin <chipsoid@cpan.org>
+    Mohammad S Anwar <mohammad.anwar@yahoo.com>
 
 =head1 LICENSE
 

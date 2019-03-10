@@ -2,6 +2,8 @@ Revision history for Perl extension Games-EveOnline-API.
 
 {{$NEXT}}
 
+ - Declare URI dep.
+
 0.09 2019-03-10T12:09:07Z
 
  - Fix a test that was changed in 0.08 to use strictures, which is not
