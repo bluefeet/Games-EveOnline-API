@@ -66,7 +66,7 @@
          "web" : "https://github.com/bluefeet/Games-EveOnline-API"
       }
    },
-   "version" : "0.08",
+   "version" : "0.09",
    "x_authority" : "cpan:BLUEFEET",
    "x_contributors" : [
       "Andrey Kuzmin <chips@reg.ru>",

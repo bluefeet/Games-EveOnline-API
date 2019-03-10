@@ -1,7 +1,7 @@
 package Games::EveOnline::API;
 use Moo;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 =head1 NAME
 
