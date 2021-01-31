@@ -1453,6 +1453,16 @@ L<WebService::EveOnline>
 
 =back
 
+=head1 SUPPORT
+
+Please submit bugs and feature requests to the
+Games-EveOnline-API GitHub issue tracker:
+
+L<https://github.com/bluefeet/Games-EveOnline-API/issues>
+
+Note that, due to the L</DEPRECATED> nature of this distribution,
+new features and such may be denied.
+
 =head1 AUTHORS
 
     Aran Clary Deltac <bluefeet@gmail.com>
@@ -1463,4 +1473,6 @@ L<WebService::EveOnline>
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
+
+=cut
 

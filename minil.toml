@@ -1,5 +1,7 @@
 name = "Games-EveOnline-API"
-authority="cpan:BLUEFEET"
+authority = "cpan:BLUEFEET"
+markdown_maker = "Pod::Markdown::Github"
+license = "perl_5"
 tag_format="v%v"
 
 [Metadata]
